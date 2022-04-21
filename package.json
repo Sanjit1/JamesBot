@@ -1,0 +1,23 @@
+{
+  "name": "ucla26bot",
+  "version": "1.0.0",
+  "description": "A Discord Bot for UCLA class of 2026",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sanjit1/Co26UCLAbot.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sanjit1/Co26UCLAbot/issues"
+  },
+  "homepage": "https://github.com/Sanjit1/Co26UCLAbot#readme",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0"
+  }
+}

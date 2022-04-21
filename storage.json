@@ -1,0 +1,7 @@
+{
+    "modules":{
+        "counting":{
+            "next": 1
+        }
+    }
+}
