@@ -45,6 +45,5 @@ client.on("messageCreate", (message) => {
         counting.handle(message);
     } else if (message.channelId == constants.channels["join-logs"]) {
         join.handle(message);
-    }
-    // Command Handler
+    } else if(message.channelId == constants.channels)
 });
