@@ -1,6 +1,4 @@
 // why not: https://discord.js.org/#/docs/discord.js/
-const test = true;
-
 // libraries
 const { Client, Intents } = require("discord.js");
 require("dotenv/config");
@@ -9,6 +7,7 @@ require("dotenv/config");
 const constants = test
     ? require("./testConstants.json")
     : require("./constants.json");
+const test = process.env.ARETEST == 1;
 
 // modules
 const counting = require("./modules/counting.js");
@@ -41,10 +40,11 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", (message) => {
-    // channelHandler
+    // Channel Handler
     if (message.channelId == constants.channels.counting) {
         counting.handle(message);
     } else if (message.channelId == constants.channels["join-logs"]) {
         join.handle(message);
     }
+    // Command Handler
 });
