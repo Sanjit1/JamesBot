@@ -4,10 +4,10 @@ const { Client, Intents } = require("discord.js");
 require("dotenv/config");
 
 // constants
+const test = process.env.ARETEST == 1;
 const constants = test
     ? require("./testConstants.json")
     : require("./constants.json");
-const test = process.env.ARETEST == 1;
 
 // modules
 const counting = require("./modules/counting.js");
