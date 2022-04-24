@@ -21,6 +21,9 @@ const handle = (message) => {
 
     if (num == currentCount && message.author.id != mostRecentUser) {
         currentCount++;
+        if (num % 100 == 0) {
+            message.react("💯");
+        }
         message.react("☑️");
         mostRecentUser = message.author.id;
     } else if (!isNaN(num)) {
