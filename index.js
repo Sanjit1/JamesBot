@@ -48,3 +48,17 @@ client.on("messageCreate", (message) => {
     } else if (message.channelId == constants.channels) {
     }
 });
+
+client.on("messageDelete", (message) => {
+    // Channel Handler
+    if (message.channelId == constants.channels.counting) {
+        counting.handleDel(message);
+    }
+});
+
+client.on("messageUpdate", (oldMessage, newMessage) => {
+    // Channel Handler
+    if (oldMessage.channelId == constants.channels.counting) {
+        counting.handleEdit(oldMessage, newMessage);
+    }
+});
