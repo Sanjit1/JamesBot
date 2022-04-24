@@ -3,7 +3,6 @@ const math = require("mathjs");
 const fs = require("fs");
 const storage = fs.readFileSync("./storage.json");
 const parsedStorage = JSON.parse(storage);
-console.log(parsedStorage.modules.counting.next);
 
 var currentCount = parsedStorage.modules.counting.next;
 var mostRecentUser = "";
