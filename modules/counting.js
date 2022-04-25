@@ -27,7 +27,7 @@ const handle = (message) => {
         }
         message.react("☑️");
         mostRecentUser = message.author.id;
-        fs.writeFileSync("./storage.json", parsedStorage);
+        fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
     } else if (!isNaN(num)) {
         message.react("❎");
         if (currentCount <= 1) {
