@@ -12,6 +12,7 @@ const constants = test
 // modules
 const counting = require("./modules/counting.js");
 const join = require("./modules/join.js");
+const qotd = require("./modules/qotd.js");
 
 // Basic Init Stuff
 const intents = [
@@ -33,7 +34,10 @@ const intents = [
     Intents.FLAGS.GUILD_SCHEDULED_EVENTS,
 ];
 
-const client = new Client({ intents: intents });
+const client = new Client({
+    intents: intents,
+    partials: ["MESSAGE", "CHANNEL", "REACTION"],
+});
 client.login(test ? process.env.TEST : process.env.TOKEN);
 client.once("ready", () => {
     console.log("Bots on");
@@ -50,15 +54,21 @@ client.on("messageCreate", (message) => {
 });
 
 client.on("messageDelete", (message) => {
-    // Channel Handler
+    // Delete Handler
     if (message.channelId == constants.channels.counting) {
         counting.handleDel(message);
     }
 });
 
 client.on("messageUpdate", (oldMessage, newMessage) => {
-    // Channel Handler
+    // Edit Handler
     if (oldMessage.channelId == constants.channels.counting) {
         counting.handleEdit(oldMessage, newMessage);
+    }
+});
+
+client.on("messageReactionAdd", (reaction, user) => {
+    if (reaction.message.channelId == constants.channels.suggestions) {
+        qotd.handleReaction(reaction, user, constants.users.sanjit);
     }
 });
