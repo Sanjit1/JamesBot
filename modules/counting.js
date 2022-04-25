@@ -21,13 +21,11 @@ const handle = (message) => {
 
     if (num == currentCount && message.author.id != mostRecentUser) {
         currentCount++;
-        parsedStorage.modules.counting.next++;
         if (num % 100 == 0) {
             message.react("💯");
         }
         message.react("☑️");
         mostRecentUser = message.author.id;
-        fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
     } else if (!isNaN(num)) {
         message.react("❎");
         if (currentCount <= 1) {
@@ -52,6 +50,8 @@ const handle = (message) => {
                 currentCount
         );
     }
+    parsedStorage.modules.counting.next = currentCount;
+    fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
 };
 
 const handleDel = (message) => {
