@@ -4,11 +4,9 @@ const fs = require("fs");
 const storage = fs.readFileSync("./storage.json");
 const parsedStorage = JSON.parse(storage);
 
-var currentCount = parsedStorage.modules.counting.next;
 var mostRecentUser = "";
 
 const handle = (message) => {
-    currentCount = parsedStorage.modules.counting.next;
     var num;
     try {
         num =
@@ -19,8 +17,11 @@ const handle = (message) => {
         num = "hm";
     }
 
-    if (num == currentCount && message.author.id != mostRecentUser) {
-        currentCount++;
+    if (
+        num == parsedStorage.modules.counting.next &&
+        message.author.id != mostRecentUser
+    ) {
+        parsedStorage.modules.counting.next++;
         if (num % 100 == 0) {
             message.react("💯");
         }
@@ -28,15 +29,20 @@ const handle = (message) => {
         mostRecentUser = message.author.id;
     } else if (!isNaN(num)) {
         message.react("❎");
-        if (currentCount <= 1) {
-            currentCount = 1;
+        if (parsedStorage.modules.counting.next <= 1) {
+            parsedStorage.modules.counting.next = 1;
             mostRecentUser = "";
-        } else if (currentCount <= 50) {
-            currentCount = currentCount - 1;
-        } else if (currentCount <= 100) {
-            currentCount = Math.floor(currentCount * 0.95);
+        } else if (parsedStorage.modules.counting.next <= 50) {
+            parsedStorage.modules.counting.next =
+                parsedStorage.modules.counting.next - 1;
+        } else if (parsedStorage.modules.counting.next <= 100) {
+            parsedStorage.modules.counting.next = Math.floor(
+                parsedStorage.modules.counting.next * 0.95
+            );
         } else {
-            currentCount = Math.floor(currentCount * 0.9);
+            parsedStorage.modules.counting.next = Math.floor(
+                parsedStorage.modules.counting.next * 0.9
+            );
         }
         if (mostRecentUser == message.author.id) {
             message.channel.send("You can't count twice in a row!");
@@ -47,10 +53,9 @@ const handle = (message) => {
                 ">" +
                 " sucks. " +
                 "The next number is: " +
-                currentCount
+                parsedStorage.modules.counting.next
         );
     }
-    parsedStorage.modules.counting.next = currentCount;
     fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
 };
 
@@ -65,7 +70,7 @@ const handleDel = (message) => {
         num = "hm";
     }
 
-    if (!isNaN(num) && currentCount == num + 1) {
+    if (!isNaN(num) && parsedStorage.modules.counting.next == num + 1) {
         message.channel.send(
             "<@" +
                 message.author.id +
@@ -74,7 +79,7 @@ const handleDel = (message) => {
                 num +
                 ". " +
                 "The next number is: " +
-                currentCount
+                parsedStorage.modules.counting.next
         );
     }
 };
@@ -90,7 +95,7 @@ const handleEdit = (oldMessage, newMessage) => {
         num = "hm";
     }
 
-    if (!isNaN(num) && currentCount == num + 1) {
+    if (!isNaN(num) && parsedStorage.modules.counting.next == num + 1) {
         message.channel.send(
             "<@" +
                 message.author.id +
@@ -99,7 +104,7 @@ const handleEdit = (oldMessage, newMessage) => {
                 num +
                 ". " +
                 "The next number is: " +
-                currentCount
+                parsedStorage.modules.counting.next
         );
     }
 };
