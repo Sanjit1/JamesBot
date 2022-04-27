@@ -1,6 +1,6 @@
 // why not: https://discord.js.org/#/docs/discord.js/
 // libraries
-const { Client, Intents } = require("discord.js");
+const { Client, Intents, MessageEmbed } = require("discord.js");
 require("dotenv/config");
 
 // constants
@@ -68,6 +68,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 });
 
 client.on("messageReactionAdd", (reaction, user) => {
+    // Reactions Handler
     if (reaction.message.channelId == constants.channels.suggestions) {
         qotd.handleReaction(reaction, user, constants.users.sanjit);
     }
