@@ -13,6 +13,7 @@ const constants = test
 const counting = require("./modules/counting.js");
 const join = require("./modules/join.js");
 const qotd = require("./modules/qotd.js");
+const admin = require("./modules/admin.js");
 
 // Basic Init Stuff
 const intents = [
@@ -50,6 +51,13 @@ client.on("messageCreate", (message) => {
     } else if (message.channelId == constants.channels["join-logs"]) {
         join.handle(message);
     } else if (message.channelId == constants.channels) {
+    }
+
+    if (
+        message.content.startsWith("j@") &&
+        message.author.id == constants.users.sanjit
+    ) {
+        admin.handle(message);
     }
 });
 

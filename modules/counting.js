@@ -1,8 +1,8 @@
 // why not: https://discord.js.org/#/docs/discord.js/
 const math = require("mathjs");
 const fs = require("fs");
-const storage = fs.readFileSync("./storage.json");
-const parsedStorage = JSON.parse(storage);
+var storage = fs.readFileSync("./storage.json");
+var parsedStorage = JSON.parse(storage);
 
 var mostRecentUser = "";
 
@@ -16,6 +16,9 @@ const handle = (message) => {
     } catch {
         num = "hm";
     }
+
+    storage = fs.readFileSync("./storage.json");
+    parsedStorage = JSON.parse(storage);
 
     if (
         num == parsedStorage.modules.counting.next &&
@@ -47,13 +50,20 @@ const handle = (message) => {
         if (mostRecentUser == message.author.id) {
             message.channel.send("You can't count twice in a row!");
         }
+        var last =
+            mostRecentUser == ""
+                ? "the FROG"
+                : message.guild.members.cache.get(mostRecentUser).user.username;
         message.channel.send(
             "<@" +
                 message.author.id +
                 ">" +
                 " sucks. " +
                 "The next number is: " +
-                parsedStorage.modules.counting.next
+                parsedStorage.modules.counting.next +
+                ". Make sure " +
+                last +
+                " doesn't count the next count."
         );
     }
     fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
