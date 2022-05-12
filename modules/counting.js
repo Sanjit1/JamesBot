@@ -9,18 +9,25 @@ var storedNumber;
 var mostRecentUser = "";
 
 // Initilizes a map/ dictonary of people who messup and how many times they mess up
+// Uses: https://www.w3schools.com/js/js_object_maps.asp
 const dictOfFails = new Map([]);
 
-const handle = (message) => {
-    var num;
+// determines if message is a number
+function evauluateIfMessageIsNumber(Messagecontent){
+    var numberCounter;
     try {
-        num =
-            typeof math.evaluate(message.content) == "number"
-                ? math.evaluate(message.content)
+        numberCounter =
+            typeof math.evaluate(Messagecontent) == "number"
+                ? math.evaluate(Messagecontent)
                 : "hm";
     } catch {
-        num = "hm";
+        nummberCounter = "hm";
     }
+    return numberCounter;
+}
+const handle = (message) => {
+    var num;
+    num = evauluateIfMessageIsNumber(message.content)
     // reads in the storage json holding the current count
     storage = fs.readFileSync("./storage.json");
     parsedStorage = JSON.parse(storage);
@@ -80,16 +87,7 @@ const handle = (message) => {
 // handles when people delete their messages
 const handleDel = (message) => {
     var num;
-    // checks if a message was sent
-    try {
-        num =
-            typeof math.evaluate(message.content) == "number"
-                ? math.evaluate(message.content)
-                : "hm";
-    } catch {
-        num = "hm";
-    }
-
+    num = evauluateIfMessageIsNumber(message.content)
     // sends message if last person to count deleted their message
     if (!isNaN(num) && parsedStorage.modules.counting.next == num + 1) {
         message.channel.send(
@@ -108,20 +106,13 @@ const handleDel = (message) => {
 // handles when people edit their message
 const handleEdit = (oldMessage, newMessage) => {
     var num;
-    try {
-        num =
-            typeof math.evaluate(oldMessage.content) == "number"
-                ? math.evaluate(oldMessage.content)
-                : "hm";
-    } catch {
-        num = "hm";
-    }
+    num = evauluateIfMessageIsNumber(oldMessage.content)
 
     // sends message if last person edited their count
     if (!isNaN(num) && parsedStorage.modules.counting.next == num + 1) {
-        message.channel.send(
+        oldMessage.channel.send(
             "<@" +
-                message.author.id +
+                oldMessage.author.id +
                 ">" +
                 " sucks, they edited their count of " +
                 num +
