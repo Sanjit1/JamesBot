@@ -8,6 +8,9 @@ var parsedStorage = JSON.parse(storage);
 var storedNumber;
 var mostRecentUser = "";
 
+// Initilizes a map/ dictonary of people who messup and how many times they mess up
+const dictOfFails = new Map([]);
+
 const handle = (message) => {
     var num;
     try {
@@ -18,38 +21,42 @@ const handle = (message) => {
     } catch {
         num = "hm";
     }
-
+    // reads in the storage json holding the current count
     storage = fs.readFileSync("./storage.json");
     parsedStorage = JSON.parse(storage);
 
+    // Checks if the most recent message was sent by the last person to count correctly
     if (
         num == parsedStorage.modules.counting.next &&
         message.author.id != mostRecentUser
-    ) {
+    ) { // adds emoji reactions to correct counts
         parsedStorage.modules.counting.next++;
         if (num % 100 == 0) {
             message.react("💯");
         }
         message.react("☑️");
         mostRecentUser = message.author.id;
+    // checks if the message is a number
     } else if (!isNaN(num)) {
         message.react("❎");
 
         // handles the subtraction of the number
+        // checks if number is less than 1 and sets it to one
         if (parsedStorage.modules.counting.next <= 1) {
             parsedStorage.modules.counting.next = 1;
             mostRecentUser = "";
-        } else {
+        } else { // subtracts a  value for a failer based on an equation
             storedNumber = parsedStorage.modules.counting.next;
             parsedStorage.modules.counting.next = storedNumber - (Math.floor(
                 ((6900/(1 + math.e**(-0.00005*(storedNumber - 0)))) + (math.e**(storedNumber/69420)) +
                 0.02*storedNumber + math.log10(3*storedNumber) - 3452) / 1.15 + storedNumber**0.4
             ));
         }
-                
+        // checks if someone counted twice in a row            
         if (mostRecentUser == message.author.id) {
             message.channel.send("You can't count twice in a row!");
         }
+        // sends a message if someone counted twice in a row
         var last =
             mostRecentUser == ""
                 ? "the FROG"
@@ -66,11 +73,14 @@ const handle = (message) => {
                 " doesn't count the next count."
         );
     }
+    // writes the new count to storage
     fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
 };
 
+// handles when people delete their messages
 const handleDel = (message) => {
     var num;
+    // checks if a message was sent
     try {
         num =
             typeof math.evaluate(message.content) == "number"
@@ -80,6 +90,7 @@ const handleDel = (message) => {
         num = "hm";
     }
 
+    // sends message if last person to count deleted their message
     if (!isNaN(num) && parsedStorage.modules.counting.next == num + 1) {
         message.channel.send(
             "<@" +
@@ -94,6 +105,7 @@ const handleDel = (message) => {
     }
 };
 
+// handles when people edit their message
 const handleEdit = (oldMessage, newMessage) => {
     var num;
     try {
@@ -105,6 +117,7 @@ const handleEdit = (oldMessage, newMessage) => {
         num = "hm";
     }
 
+    // sends message if last person edited their count
     if (!isNaN(num) && parsedStorage.modules.counting.next == num + 1) {
         message.channel.send(
             "<@" +
