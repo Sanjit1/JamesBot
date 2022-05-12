@@ -1,9 +1,11 @@
 // why not: https://discord.js.org/#/docs/discord.js/
 const math = require("mathjs");
 const fs = require("fs");
+const { CommandInteractionOptionResolver } = require("discord.js");
 var storage = fs.readFileSync("./storage.json");
 var parsedStorage = JSON.parse(storage);
 
+var storedNumber;
 var mostRecentUser = "";
 
 const handle = (message) => {
@@ -32,21 +34,19 @@ const handle = (message) => {
         mostRecentUser = message.author.id;
     } else if (!isNaN(num)) {
         message.react("❎");
+
+        // handles the subtraction of the number
         if (parsedStorage.modules.counting.next <= 1) {
             parsedStorage.modules.counting.next = 1;
             mostRecentUser = "";
-        } else if (parsedStorage.modules.counting.next <= 50) {
-            parsedStorage.modules.counting.next =
-                parsedStorage.modules.counting.next - 1;
-        } else if (parsedStorage.modules.counting.next <= 100) {
-            parsedStorage.modules.counting.next = Math.floor(
-                parsedStorage.modules.counting.next * 0.95
-            );
         } else {
-            parsedStorage.modules.counting.next = Math.floor(
-                parsedStorage.modules.counting.next * 0.9
-            );
+            storedNumber = parsedStorage.modules.counting.next;
+            parsedStorage.modules.counting.next = storedNumber - (Math.floor(
+                ((6900/(1 + math.e**(-0.00005*(storedNumber - 0)))) + (math.e**(storedNumber/69420)) +
+                0.02*storedNumber + math.log10(3*storedNumber) - 3452) / 1.15 + storedNumber**0.4
+            ));
         }
+                
         if (mostRecentUser == message.author.id) {
             message.channel.send("You can't count twice in a row!");
         }
