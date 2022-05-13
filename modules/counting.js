@@ -81,6 +81,7 @@ const handle = (message) => {
         }else{
             // adds user to data base because it didn't find their user id
             failsInCounting.push(message.author.id + ":" + 1);
+            numberOfScrewUps = 1;
         }
 
         // pushes updates to the actual storage json
@@ -112,6 +113,9 @@ const handle = (message) => {
                 message.author.id +
                 ">" +
                 " sucks. " +
+                "They have screwed up " +
+                numberOfScrewUps + 
+                " times. " +
                 "The next number is: " +
                 parsedStorage.modules.counting.next +
                 ". Make sure " +
