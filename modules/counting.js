@@ -8,9 +8,9 @@ var parsedStorage = JSON.parse(storage);
 var storedNumber;
 var mostRecentUser = "";
 
-// Initilizes a map/ dictonary of people who messup and how many times they mess up
-// Uses: https://www.w3schools.com/js/js_object_maps.asp
-const dictOfFails = new Map([]);
+// Initilizes an array of people who messup and how many times they mess up
+// Should be in the format person.id:1 then use .split(:) to get info
+var failsInCounting = [];
 
 // determines if message is a number
 function evauluateIfMessageIsNumber(Messagecontent){
@@ -47,6 +47,46 @@ const handle = (message) => {
     } else if (!isNaN(num)) {
         message.react("❎");
 
+        // sets the arrat fails in counting to have the array stored in the storage.json file
+        failsInCounting = parsedStorage.modules.counting.failTracker;
+
+
+        // uses: https://www.w3schools.com/js/js_arrays.asp
+        var indexOfName;
+        var numberOfScrewUps;
+        var isTheIdContained = false;
+
+        // checks if the person who failed is already in the database
+        failsInCounting.forEach(element =>{
+            var splitElement = element.split(":");
+            if(splitElement[0] == message.author.id){
+            isTheIdContained = true;
+            }
+        });
+        
+        // gives conditions based on if id was found
+        if(isTheIdContained){
+            var iterableForCounting = 0;
+            failsInCounting.forEach(element => {
+                var splitFailsInCounting = element.split(":");
+                if(message.author.id == splitFailsInCounting[0]){
+                    indexOfName = iterableForCounting;
+                    numberOfScrewUps = splitFailsInCounting[1];
+                    numberOfScrewUps ++;
+                }
+                iterableForCounting ++;
+            });
+            // pushes new number of screw ups to storage
+            failsInCounting[indexOfName] = message.author.id + ":" + numberOfScrewUps;
+        }else{
+            // adds user to data base because it didn't find their user id
+            failsInCounting.push(message.author.id + ":" + 1);
+            numberOfScrewUps = 1;
+        }
+
+        // pushes updates to the actual storage json
+        parsedStorage.modules.counting.failTracker = failsInCounting;
+
         // handles the subtraction of the number
         // checks if number is less than 1 and sets it to one
         if (parsedStorage.modules.counting.next <= 1) {
@@ -73,6 +113,9 @@ const handle = (message) => {
                 message.author.id +
                 ">" +
                 " sucks. " +
+                "They have screwed up " +
+                numberOfScrewUps + 
+                " times. " +
                 "The next number is: " +
                 parsedStorage.modules.counting.next +
                 ". Make sure " +
