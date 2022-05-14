@@ -7,6 +7,7 @@ var parsedStorage = JSON.parse(storage);
 
 var storedNumber;
 var mostRecentUser = "";
+var cashedTimestamp = 0;
 
 // Initilizes an array of people who messup and how many times they mess up
 // Should be in the format person.id:1 then use .split(:) to get info
@@ -26,6 +27,8 @@ function evauluateIfMessageIsNumber(Messagecontent){
     return numberCounter;
 }
 const handle = (message) => {
+    // sets the elapsed time between messages
+    var elapsedtime = math.abs(message.createdTimestamp - cashedTimestamp);
     var num;
     num = evauluateIfMessageIsNumber(message.content)
     // reads in the storage json holding the current count
@@ -34,8 +37,8 @@ const handle = (message) => {
 
     // Checks if the most recent message was sent by the last person to count correctly
     if (
-        num == parsedStorage.modules.counting.next &&
-        message.author.id != mostRecentUser
+        num == parsedStorage.modules.counting.next
+        && message.author.id != mostRecentUser
     ) { // adds emoji reactions to correct counts
         parsedStorage.modules.counting.next++;
         if (num % 100 == 0) {
@@ -43,8 +46,34 @@ const handle = (message) => {
         }
         message.react("☑️");
         mostRecentUser = message.author.id;
+        cashedTimestamp = message.createdTimestamp;
+    
+    // looks for if the time between messages was less than x in milliseconds
+    // message.channel.send("delta time: " + elapsedtime);
+    } else if(num == (parsedStorage.modules.counting.next-1)&&
+        message.author.id != mostRecentUser && 
+        elapsedtime <= 6900){
+        // finds last user
+        var last =
+        mostRecentUser == ""
+            ? "the FROG"
+            : message.guild.members.cache.get(mostRecentUser).user.username;
+
+        // message sent to channel
+        message.channel.send(
+            "<@" +
+            message.author.id +
+            ">" +
+            " Is alright, they were only " + elapsedtime + 
+            " milliseconds behind the last person. It was close, but this bot will allow the count to continue " +
+            "The next number is: " +
+            parsedStorage.modules.counting.next +
+            ". Make sure " +
+            last +
+            " doesn't count the next count."
+        )
     // checks if the message is a number
-    } else if (!isNaN(num)) {
+    }else if (!isNaN(num)) {
         message.react("❎");
 
         // sets the arrat fails in counting to have the array stored in the storage.json file
