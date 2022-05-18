@@ -40,10 +40,33 @@ const handle = (message) => {
         num == parsedStorage.modules.counting.next
         && message.author.id != mostRecentUser
     ) { // adds emoji reactions to correct counts
-        parsedStorage.modules.counting.next++;
         if (num % 100 == 0) {
             message.react("💯");
+        }else if (num % 100 == 69){
+            message.react('<:nice:967861316524056606>');
+            message.react('🇳');      
+            message.react('🇮');
+            message.react('🇨');
+            message.react('🇪');
+        }else if(num % 1000 == 420){
+            message.react('🅱️');
+            message.react('🇱');
+            message.react('🅰️');
+            message.react('🇿');
+            message.react('🇪');
+            message.react('🍃');
+            message.react('🇮');
+            message.react('🇹');
+        }else if(num % 100 == 42){
+            message.react('🅰️');
+            message.react('🇳');
+            message.react('🇸');
+            message.react('🇼');
+            message.react('🇪');
+            message.react('🇷');
         }
+        
+        parsedStorage.modules.counting.next++;
         message.react("☑️");
         mostRecentUser = message.author.id;
         cashedTimestamp = message.createdTimestamp;
