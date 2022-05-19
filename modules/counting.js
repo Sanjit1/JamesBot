@@ -190,6 +190,9 @@ const handle = (message) => {
         Math.floor(userStats.errors * 25 + (1 + userStats.errors ** 2) / 10);
 
     parsedStorage.modules.counting.statistics[userIndex] == userStats;
+    parsedStorage.modules.counting.statistics.sort((a, b) => {
+        return a.score > b.score ? -1 : 1;
+    });
 
     fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
 };
