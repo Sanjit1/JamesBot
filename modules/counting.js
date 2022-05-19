@@ -43,7 +43,8 @@ const handle = (message) => {
         if (num % 100 == 0) {
             message.react("💯");
         }else if (num % 100 == 69){
-            message.react('<:nice:967861316524056606>');
+            const sixtyNine = guild.emojis.cache.find(emoji => emoji.name === "69");
+            message.react(sixtyNine);
             message.react('🇳');      
             message.react('🇮');
             message.react('🇨');
@@ -65,7 +66,7 @@ const handle = (message) => {
             message.react('🇪');
             message.react('🇷');
         }
-        
+
         parsedStorage.modules.counting.next++;
         message.react("☑️");
         mostRecentUser = message.author.id;
