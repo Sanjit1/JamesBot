@@ -3,6 +3,7 @@
     Counting module: Feature tracker
     Tracks four cases as laid in lines 43-47
     Reacts to messages: Valid get ticks, Invalid get Crosses, special cases get special reacts
+    Scoreboard and rankings
 */
 
 const math = require("mathjs");
@@ -13,10 +14,6 @@ var parsedStorage = JSON.parse(storage);
 var storedNumber;
 var mostRecentUser = "";
 var cashedTimestamp = 0;
-
-// Initilizes an array of people who messup and how many times they mess up
-// Should be in the format person.id:1 then use .split(:) to get info
-var failsInCounting = [];
 
 // determines if message is a number
 function evaluateMessage(Messagecontent) {
@@ -48,20 +45,44 @@ const handle = (message) => {
         C4: Counting in a row: Same user counts multiple times. Count moves back by a bit.
         Case 3 is implemented within Case 4
     */
+    var userIndex = parsedStorage.modules.counting.statistics
+        .map((e) => {
+            return e.user;
+        })
+        .indexOf(message.author.id);
+    if (userIndex < 0) {
+        parsedStorage.modules.counting.statistics.push({
+            user: message.author.id,
+            timesCounted: 0,
+            timesCountedHundred: 0,
+            timesCountedSixtyNine: 0,
+            timesCountedFourTwenty: 0,
+            timesCountedFortyTwo: 0,
+            errors: 0,
+            score: 0,
+        });
+        userIndex = parsedStorage.modules.counting.statistics.length - 1;
+    }
+
+    var userStats = parsedStorage.modules.counting.statistics[userIndex];
     if (
         num == parsedStorage.modules.counting.next &&
         message.author.id != mostRecentUser
     ) {
+        userStats.timesCounted++;
         // adds emoji reactions to correct counts
         if (num % 100 == 0) {
+            userStats.timesCountedHundred++;
             message.react("💯");
         } else if (num % 100 == 69) {
+            userStats.timesCountedSixtyNine++;
             message.react("🇳");
             message.react("🇮");
             message.react("🇨");
             message.react("🇪");
-            message.react("<:69:976883800623685672>");
+            //message.react("<:69:976918710235312248>");
         } else if (num % 1000 == 420) {
+            userStats.timesCountedFourTwenty++;
             message.react("🅱️");
             message.react("🇱");
             message.react("🅰️");
@@ -71,6 +92,7 @@ const handle = (message) => {
             message.react("🇮");
             message.react("🇹");
         } else if (num % 100 == 42) {
+            userStats.timesCountedFortyTwo++;
             message.react("🅰️");
             message.react("🇳");
             message.react("🇸");
@@ -96,7 +118,6 @@ const handle = (message) => {
             mostRecentUser == ""
                 ? "the FROG"
                 : message.guild.members.cache.get(mostRecentUser).user.username;
-
         // message sent to channel
         message.channel.send(
             "<@" +
@@ -115,54 +136,14 @@ const handle = (message) => {
         // checks if the message is a number
     } else if (!isNaN(num)) {
         message.react("❎");
-
-        // sets the array fails in counting to have the array stored in the storage.json file
-        failsInCounting = parsedStorage.modules.counting.failTracker;
-
-        // uses: https://www.w3schools.com/js/js_arrays.asp
-        var indexOfName;
-        var numberOfScrewUps;
-        var isTheIdContained = false;
-
-        // checks if the person who failed is already in the database
-        failsInCounting.forEach((element) => {
-            var splitElement = element.split(":");
-            if (splitElement[0] == message.author.id) {
-                isTheIdContained = true;
-            }
-        });
-
-        // gives conditions based on if id was found
-        if (isTheIdContained) {
-            var iterableForCounting = 0;
-            failsInCounting.forEach((element) => {
-                var splitFailsInCounting = element.split(":");
-                if (message.author.id == splitFailsInCounting[0]) {
-                    indexOfName = iterableForCounting;
-                    numberOfScrewUps = splitFailsInCounting[1];
-                    numberOfScrewUps++;
-                }
-                iterableForCounting++;
-            });
-            // pushes new number of screw ups to storage
-            failsInCounting[indexOfName] =
-                message.author.id + ":" + numberOfScrewUps;
-        } else {
-            // adds user to data base because it didn't find their user id
-            failsInCounting.push(message.author.id + ":" + 1);
-            numberOfScrewUps = 1;
-        }
-
-        // pushes updates to the actual storage json
-        parsedStorage.modules.counting.failTracker = failsInCounting;
-
+        userStats.errors++;
         // handles the subtraction of the number
         // checks if number is less than 1 and sets it to one
         if (parsedStorage.modules.counting.next <= 1) {
             parsedStorage.modules.counting.next = 1;
             mostRecentUser = "";
         } else {
-            // subtracts a  value for a failer based on an equation
+            // subtracts a value based on an equation
             storedNumber = parsedStorage.modules.counting.next;
             parsedStorage.modules.counting.next =
                 storedNumber -
@@ -189,11 +170,9 @@ const handle = (message) => {
             "<@" +
                 message.author.id +
                 ">" +
-                " sucks. " +
-                "They have screwed up " +
-                numberOfScrewUps +
-                " times. " +
-                "The next number is: " +
+                " sucks. You have messed up " +
+                userStats.errors +
+                " times. The next number is: " +
                 parsedStorage.modules.counting.next +
                 ". Make sure " +
                 last +
@@ -201,6 +180,17 @@ const handle = (message) => {
         );
     }
     // writes the new count to storage
+    // Update score and ranking
+    userStats.score =
+        userStats.timesCounted * 10 +
+        userStats.timesCountedHundred * 100 +
+        userStats.timesCountedSixtyNine * 69 +
+        userStats.timesCountedFourTwenty * 420 +
+        userStats.timesCountedFortyTwo * 42 -
+        Math.floor(userStats.errors * 25 + (1 + userStats.errors ** 2) / 10);
+
+    parsedStorage.modules.counting.statistics[userIndex] == userStats;
+
     fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
 };
 
