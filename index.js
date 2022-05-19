@@ -14,6 +14,7 @@ const counting = require("./modules/counting.js");
 const join = require("./modules/join.js");
 const qotd = require("./modules/qotd.js");
 const admin = require("./modules/admin.js");
+const commands = require("./modules/commands.js");
 
 // Basic Init Stuff
 const intents = [
@@ -58,6 +59,8 @@ client.on("messageCreate", (message) => {
         message.author.id == constants.users.sanjit
     ) {
         admin.handle(message);
+    } else if (message.content.startsWith("j!")) {
+        commands.handle(message, MessageEmbed);
     }
 });
 

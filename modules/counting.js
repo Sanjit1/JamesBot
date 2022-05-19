@@ -50,6 +50,7 @@ const handle = (message) => {
             return e.user;
         })
         .indexOf(message.author.id);
+    // Finds the user who sent a message in counting
     if (userIndex < 0) {
         parsedStorage.modules.counting.statistics.push({
             user: message.author.id,
@@ -62,9 +63,11 @@ const handle = (message) => {
             score: 0,
         });
         userIndex = parsedStorage.modules.counting.statistics.length - 1;
+        // If not found, adds to storage and set the Index to the last of the list
     }
 
     var userStats = parsedStorage.modules.counting.statistics[userIndex];
+    // Localize userStats
     if (
         num == parsedStorage.modules.counting.next &&
         message.author.id != mostRecentUser
@@ -105,9 +108,6 @@ const handle = (message) => {
         message.react("☑️");
         mostRecentUser = message.author.id;
         cashedTimestamp = message.createdTimestamp;
-
-        // looks for if the time between messages was less than x in milliseconds
-        // message.channel.send("delta time: " + elapsedtime);
     } else if (
         num == parsedStorage.modules.counting.next - 1 &&
         message.author.id != mostRecentUser &&
@@ -188,11 +188,14 @@ const handle = (message) => {
         userStats.timesCountedFourTwenty * 420 +
         userStats.timesCountedFortyTwo * 42 -
         Math.floor(userStats.errors * 25 + (1 + userStats.errors ** 2) / 10);
+    // Calculates score based on constants from #5.
 
     parsedStorage.modules.counting.statistics[userIndex] == userStats;
+    // adds userStats back to temp Storage
     parsedStorage.modules.counting.statistics.sort((a, b) => {
         return a.score > b.score ? -1 : 1;
     });
+    // sorts the temp storage to determine ranking
 
     fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
 };
