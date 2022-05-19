@@ -43,7 +43,6 @@ const handle = (message) => {
         if (num % 100 == 0) {
             message.react("💯");
         }else if (num % 100 == 69){
-            message.react('<:nice:967861316524056606>');
             message.react('🇳');      
             message.react('🇮');
             message.react('🇨');
