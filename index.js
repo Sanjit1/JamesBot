@@ -15,6 +15,7 @@ const join = require("./modules/join.js");
 const qotd = require("./modules/qotd.js");
 const admin = require("./modules/admin.js");
 const commands = require("./modules/commands.js");
+const historicalMessages = require("./modules/historicalMessages.js");
 
 // Basic Init Stuff
 const intents = [
@@ -82,5 +83,8 @@ client.on("messageReactionAdd", (reaction, user) => {
     // Reactions Handler
     if (reaction.message.channelId == constants.channels.suggestions) {
         qotd.handleReaction(reaction, user, constants.users.sanjit);
+    }
+    if (reaction.emoji.name == "🎍") {
+        historicalMessages.handle(reaction, MessageEmbed);
     }
 });

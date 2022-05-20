@@ -83,7 +83,7 @@ const handle = (message) => {
             message.react("🇮");
             message.react("🇨");
             message.react("🇪");
-            //message.react("<:69:976918710235312248>");
+            message.react("<:69:967861237276893244>");
         } else if (num % 1000 == 420) {
             userStats.timesCountedFourTwenty++;
             message.react("🅱️");

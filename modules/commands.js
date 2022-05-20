@@ -20,39 +20,42 @@ const handle = (message, MessageEmbed) => {
         message.channelId == constants.channels.bots
     ) {
         var helpMenu = new MessageEmbed()
-            .setColour("#decaf5")
+            .setColor("#decaf5")
             .setTitle("James' Help Menu")
-            .setAuthor(message.author.id)
+            .setAuthor({
+                name: message.author.username,
+                iconURL: message.author.displayAvatarURL(),
+            })
             .setDescription("Welcome to James")
             .addFields(
                 {
-                    names: "j!help",
+                    name: "j!help",
                     value: "Brings up this help menu. May only be used in bots-spam-the-ham",
                     inline: true,
                 },
                 {
-                    names: "j!count next",
+                    name: "j!count next",
                     value: "Shows the next count for counting. May only be used in bots-spam-the-ham and counting",
                     inline: true,
                 },
                 {
-                    names: "j!count top <#>",
+                    name: "j!count top <#>",
                     value: "Shows the counting leaderboard. May only be used in bots-spam-the-ham.",
                     inline: true,
                 },
                 {
-                    names: "j!count rank <user>",
+                    name: "j!count rank <user>",
                     value: "Shows the counting rank of the user mentioned. May only be used in bots-spam-the-ham",
                     inline: true,
                 },
                 {
-                    names: "j!count stats <user>",
+                    name: "j!count stats <user>",
                     value: "Shows the counting statistics of the user mentioned. May only be used in bots-spam-the-ham",
                     inline: true,
                 }
             )
-            .setFooter("My name is James!");
-        message.channel.send(helpMenu);
+            .setFooter({ text: "My name is James!" });
+        message.channel.send({ embeds: [helpMenu] });
     } else if (
         message.content.startsWith("j!count next") &&
         (message.channelId == constants.channels.bots ||

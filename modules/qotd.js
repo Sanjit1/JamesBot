@@ -1,7 +1,5 @@
 // why not: https://discord.js.org/#/docs/discord.js/
 
-const { Message } = require("discord.js");
-
 const handleReaction = (messageReaction, user, sanjit) => {
     if (user.id == sanjit && messageReaction.emoji.name == "🔱") {
         var msg;
