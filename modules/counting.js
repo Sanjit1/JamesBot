@@ -1,7 +1,13 @@
 // why not: https://discord.js.org/#/docs/discord.js/
+/*
+    Counting module: Feature tracker
+    Tracks four cases as laid in lines 43-47
+    Reacts to messages: Valid get ticks, Invalid get Crosses, special cases get special reacts
+    Scoreboard and rankings
+*/
+
 const math = require("mathjs");
 const fs = require("fs");
-const { CommandInteractionOptionResolver } = require("discord.js");
 var storage = fs.readFileSync("./storage.json");
 var parsedStorage = JSON.parse(storage);
 
@@ -9,12 +15,8 @@ var storedNumber;
 var mostRecentUser = "";
 var cashedTimestamp = 0;
 
-// Initilizes an array of people who messup and how many times they mess up
-// Should be in the format person.id:1 then use .split(:) to get info
-var failsInCounting = [];
-
 // determines if message is a number
-function evauluateIfMessageIsNumber(Messagecontent){
+function evaluateMessage(Messagecontent) {
     var numberCounter;
     try {
         numberCounter =
@@ -29,128 +31,133 @@ function evauluateIfMessageIsNumber(Messagecontent){
 const handle = (message) => {
     // sets the elapsed time between messages
     var elapsedtime = math.abs(message.createdTimestamp - cashedTimestamp);
-    var num;
-    num = evauluateIfMessageIsNumber(message.content)
+    var num = evaluateMessage(message.content);
     // reads in the storage json holding the current count
     storage = fs.readFileSync("./storage.json");
     parsedStorage = JSON.parse(storage);
 
     // Checks if the most recent message was sent by the last person to count correctly
+    /*
+        Four cases:
+        C1: Valid Count: evaluateMessage will return valid count and count will increase
+        C2: Synchronous Count: Two Valid Counts with low margin of time, i.e. counting at the same time: the wrong counts will be deleted and the count moves forward
+        C3: Invalid Count: The wrong number is counted. Count moves back by a bit
+        C4: Counting in a row: Same user counts multiple times. Count moves back by a bit.
+        Case 3 is implemented within Case 4
+    */
+    var userIndex = parsedStorage.modules.counting.statistics
+        .map((e) => {
+            return e.user;
+        })
+        .indexOf(message.author.id);
+    // Finds the user who sent a message in counting
+    if (userIndex < 0) {
+        parsedStorage.modules.counting.statistics.push({
+            user: message.author.id,
+            timesCounted: 0,
+            timesCountedHundred: 0,
+            timesCountedSixtyNine: 0,
+            timesCountedFourTwenty: 0,
+            timesCountedFortyTwo: 0,
+            errors: 0,
+            score: 0,
+        });
+        userIndex = parsedStorage.modules.counting.statistics.length - 1;
+        // If not found, adds to storage and set the Index to the last of the list
+    }
+
+    var userStats = parsedStorage.modules.counting.statistics[userIndex];
+    // Localize userStats
     if (
-        num == parsedStorage.modules.counting.next
-        && message.author.id != mostRecentUser
-    ) { // adds emoji reactions to correct counts
+        num == parsedStorage.modules.counting.next &&
+        message.author.id != mostRecentUser
+    ) {
+        userStats.timesCounted++;
+        // adds emoji reactions to correct counts
         if (num % 100 == 0) {
+            userStats.timesCountedHundred++;
             message.react("💯");
-        }else if (num % 100 == 69){
-            message.react('🇳');      
-            message.react('🇮');
-            message.react('🇨');
-            message.react('🇪');
-        }else if(num % 1000 == 420){
-            message.react('🅱️');
-            message.react('🇱');
-            message.react('🅰️');
-            message.react('🇿');
-            message.react('🇪');
-            message.react('🍃');
-            message.react('🇮');
-            message.react('🇹');
-        }else if(num % 100 == 42){
-            message.react('🅰️');
-            message.react('🇳');
-            message.react('🇸');
-            message.react('🇼');
-            message.react('🇪');
-            message.react('🇷');
+        } else if (num % 100 == 69) {
+            userStats.timesCountedSixtyNine++;
+            message.react("🇳");
+            message.react("🇮");
+            message.react("🇨");
+            message.react("🇪");
+            message.react("<:69:967861237276893244>");
+        } else if (num % 1000 == 420) {
+            userStats.timesCountedFourTwenty++;
+            message.react("🅱️");
+            message.react("🇱");
+            message.react("🅰️");
+            message.react("🇿");
+            message.react("🇪");
+            message.react("🍃");
+            message.react("🇮");
+            message.react("🇹");
+        } else if (num % 100 == 42) {
+            userStats.timesCountedFortyTwo++;
+            message.react("🅰️");
+            message.react("🇳");
+            message.react("🇸");
+            message.react("🇼");
+            message.react("🇪");
+            message.react("🇷");
         }
-        
+
         parsedStorage.modules.counting.next++;
         message.react("☑️");
         mostRecentUser = message.author.id;
         cashedTimestamp = message.createdTimestamp;
-    
-    // looks for if the time between messages was less than x in milliseconds
-    // message.channel.send("delta time: " + elapsedtime);
-    } else if(num == (parsedStorage.modules.counting.next-1)&&
-        message.author.id != mostRecentUser && 
-        elapsedtime <= 6900){
+    } else if (
+        num == parsedStorage.modules.counting.next - 1 &&
+        message.author.id != mostRecentUser &&
+        elapsedtime <= 690
+    ) {
         // finds last user
         var last =
-        mostRecentUser == ""
-            ? "the FROG"
-            : message.guild.members.cache.get(mostRecentUser).user.username;
-
+            mostRecentUser == ""
+                ? "the FROG"
+                : message.guild.members.cache.get(mostRecentUser).user.username;
         // message sent to channel
         message.channel.send(
             "<@" +
-            message.author.id +
-            ">" +
-            " Is alright, they were only " + elapsedtime + 
-            " milliseconds behind the last person. It was close, but this bot will allow the count to continue " +
-            "The next number is: " +
-            parsedStorage.modules.counting.next +
-            ". Make sure " +
-            last +
-            " doesn't count the next count."
-        )
-    // checks if the message is a number
-    }else if (!isNaN(num)) {
+                message.author.id +
+                ">" +
+                " Is alright, they were only " +
+                elapsedtime +
+                " milliseconds behind the last person. It was close, but this bot will allow the count to continue " +
+                "The next number is: " +
+                parsedStorage.modules.counting.next +
+                ". Make sure " +
+                last +
+                " doesn't count the next count."
+        );
+        message.delete();
+        // checks if the message is a number
+    } else if (!isNaN(num)) {
         message.react("❎");
-
-        // sets the arrat fails in counting to have the array stored in the storage.json file
-        failsInCounting = parsedStorage.modules.counting.failTracker;
-
-
-        // uses: https://www.w3schools.com/js/js_arrays.asp
-        var indexOfName;
-        var numberOfScrewUps;
-        var isTheIdContained = false;
-
-        // checks if the person who failed is already in the database
-        failsInCounting.forEach(element =>{
-            var splitElement = element.split(":");
-            if(splitElement[0] == message.author.id){
-            isTheIdContained = true;
-            }
-        });
-        
-        // gives conditions based on if id was found
-        if(isTheIdContained){
-            var iterableForCounting = 0;
-            failsInCounting.forEach(element => {
-                var splitFailsInCounting = element.split(":");
-                if(message.author.id == splitFailsInCounting[0]){
-                    indexOfName = iterableForCounting;
-                    numberOfScrewUps = splitFailsInCounting[1];
-                    numberOfScrewUps ++;
-                }
-                iterableForCounting ++;
-            });
-            // pushes new number of screw ups to storage
-            failsInCounting[indexOfName] = message.author.id + ":" + numberOfScrewUps;
-        }else{
-            // adds user to data base because it didn't find their user id
-            failsInCounting.push(message.author.id + ":" + 1);
-            numberOfScrewUps = 1;
-        }
-
-        // pushes updates to the actual storage json
-        parsedStorage.modules.counting.failTracker = failsInCounting;
-
+        userStats.errors++;
         // handles the subtraction of the number
         // checks if number is less than 1 and sets it to one
         if (parsedStorage.modules.counting.next <= 1) {
             parsedStorage.modules.counting.next = 1;
             mostRecentUser = "";
-        } else { // subtracts a  value for a failer based on an equation
+        } else {
+            // subtracts a value based on an equation
             storedNumber = parsedStorage.modules.counting.next;
-            parsedStorage.modules.counting.next = storedNumber - (Math.floor(
-                ((6900/(1 + math.e**(-0.00005*(storedNumber - 0)))) + (math.e**(storedNumber/69420)) +
-                0.02*storedNumber + math.log10(3*storedNumber) - 3452) / 1.15 + storedNumber**0.4
-            ));
+            parsedStorage.modules.counting.next =
+                storedNumber -
+                Math.floor(
+                    (6900 / (1 + math.e ** (-0.00005 * (storedNumber - 0))) +
+                        math.e ** (storedNumber / 69420) +
+                        0.02 * storedNumber +
+                        math.log10(3 * storedNumber) -
+                        3452) /
+                        1.15 +
+                        storedNumber ** 0.4
+                );
         }
-        // checks if someone counted twice in a row            
+        // checks if someone counted twice in a row, Case 3
         if (mostRecentUser == message.author.id) {
             message.channel.send("You can't count twice in a row!");
         }
@@ -163,11 +170,9 @@ const handle = (message) => {
             "<@" +
                 message.author.id +
                 ">" +
-                " sucks. " +
-                "They have screwed up " +
-                numberOfScrewUps + 
-                " times. " +
-                "The next number is: " +
+                " sucks. You have messed up " +
+                userStats.errors +
+                " times. The next number is: " +
                 parsedStorage.modules.counting.next +
                 ". Make sure " +
                 last +
@@ -175,13 +180,30 @@ const handle = (message) => {
         );
     }
     // writes the new count to storage
+    // Update score and ranking
+    userStats.score =
+        userStats.timesCounted * 10 +
+        userStats.timesCountedHundred * 100 +
+        userStats.timesCountedSixtyNine * 69 +
+        userStats.timesCountedFourTwenty * 420 +
+        userStats.timesCountedFortyTwo * 42 -
+        Math.floor(userStats.errors * 25 + (1 + userStats.errors ** 2) / 10);
+    // Calculates score based on constants from #5.
+
+    parsedStorage.modules.counting.statistics[userIndex] == userStats;
+    // adds userStats back to temp Storage
+    parsedStorage.modules.counting.statistics.sort((a, b) => {
+        return a.score > b.score ? -1 : 1;
+    });
+    // sorts the temp storage to determine ranking
+
     fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
 };
 
 // handles when people delete their messages
 const handleDel = (message) => {
     var num;
-    num = evauluateIfMessageIsNumber(message.content)
+    num = evaluateMessage(message.content);
     // sends message if last person to count deleted their message
     if (!isNaN(num) && parsedStorage.modules.counting.next == num + 1) {
         message.channel.send(
@@ -200,7 +222,7 @@ const handleDel = (message) => {
 // handles when people edit their message
 const handleEdit = (oldMessage, newMessage) => {
     var num;
-    num = evauluateIfMessageIsNumber(oldMessage.content)
+    num = evaluateMessage(oldMessage.content);
 
     // sends message if last person edited their count
     if (!isNaN(num) && parsedStorage.modules.counting.next == num + 1) {
