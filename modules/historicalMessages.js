@@ -17,7 +17,7 @@ const handle = (reaction, MessageEmbed) => {
             }
         }
         reaction.message.reactions.cache.get("bamboo");
-        if (reaction.count > 0) {
+        if (reaction.count > 4) {
             var historicalEmbed = new MessageEmbed()
                 .setColor(
                     "#" + Math.floor(Math.random() * 16777215).toString(16)
@@ -31,7 +31,10 @@ const handle = (reaction, MessageEmbed) => {
                         reaction.message.content == ""
                             ? "Look, an Image"
                             : reaction.message.content,
-                    value: "[Click here to be teleported](https://re.re" + ")",
+                    value:
+                        "[Click here to be teleported](" +
+                        reaction.message.url +
+                        ")",
                 });
             // * frog
             if (reaction.message.attachments.size > 0) {
