@@ -102,6 +102,7 @@ const handle = (message) => {
             message.react("🇼");
             message.react("🇪");
             message.react("🇷");
+            message.channel.send("The answer to life, the universe, and everything: 42");
         }
 
         parsedStorage.modules.counting.next++;
