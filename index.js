@@ -84,7 +84,7 @@ client.on("messageReactionAdd", (reaction, user) => {
     if (reaction.message.channelId == constants.channels.suggestions) {
         qotd.handleReaction(reaction, user, constants.users.sanjit);
     }
-    if (reaction.emoji.name == "🎍") {
+    if (reaction.emoji.name == "luna") {
         historicalMessages.handle(reaction, MessageEmbed);
     }
 });

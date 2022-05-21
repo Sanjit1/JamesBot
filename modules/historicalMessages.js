@@ -6,7 +6,9 @@ const test = process.env.ARETEST == 1;
 const constants = test
     ? require("./../testConstants.json")
     : require("./../constants.json");
+
 const handle = (reaction, MessageEmbed) => {
+    //handle functions
     (async () => {
         if (reaction.partial) {
             try {
@@ -16,7 +18,7 @@ const handle = (reaction, MessageEmbed) => {
                 console.log("f ", error);
             }
         }
-        reaction.message.reactions.cache.get("bamboo");
+        reaction.message.reactions.cache.get("luna");
         if (reaction.count > 4) {
             var historicalEmbed = new MessageEmbed()
                 .setColor(
@@ -36,7 +38,6 @@ const handle = (reaction, MessageEmbed) => {
                         reaction.message.url +
                         ")",
                 });
-            // * frog
             if (reaction.message.attachments.size > 0) {
                 if (
                     Array.from(
