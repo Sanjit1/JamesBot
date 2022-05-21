@@ -19,7 +19,7 @@ const handle = (reaction, MessageEmbed) => {
             }
         }
         reaction.message.reactions.cache.get("luna");
-        if (reaction.count > 4) {
+        if (reaction.count > 3) {
             var historicalEmbed = new MessageEmbed()
                 .setColor(
                     "#" + Math.floor(Math.random() * 16777215).toString(16)
