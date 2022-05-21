@@ -46,6 +46,7 @@ const handle = (reaction, MessageEmbed) => {
                                 file.url.endsWith(".png") ||
                                 file.url.endsWith(".jpg") ||
                                 file.url.endsWith(".jpeg") ||
+                                file.url.endsWith(".mp4") ||
                                 file.url.endsWith(".gif")
                             );
                         })
@@ -58,6 +59,7 @@ const handle = (reaction, MessageEmbed) => {
                                     file.url.endsWith(".png") ||
                                     file.url.endsWith(".jpg") ||
                                     file.url.endsWith(".jpeg") ||
+                                    file.url.endsWith(".mp4") ||
                                     file.url.endsWith(".gif")
                                 );
                             })
