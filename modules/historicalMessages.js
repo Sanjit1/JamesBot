@@ -7,6 +7,10 @@ const constants = test
     ? require("./../testConstants.json")
     : require("./../constants.json");
 
+const fs = require("fs");
+var storage = fs.readFileSync("./storage.json");
+var parsedStorage = JSON.parse(storage);
+
 const handle = (reaction, MessageEmbed) => {
     //handle functions
     (async () => {
@@ -19,7 +23,15 @@ const handle = (reaction, MessageEmbed) => {
             }
         }
         reaction.message.reactions.cache.get("luna");
-        if (reaction.count > 3) {
+        if (
+            reaction.count > 3 &&
+            !parsedStorage.modules.historicalMessages.messages.includes(
+                reaction.message.id
+            )
+        ) {
+            parsedStorage.modules.historicalMessages.messages.push(
+                reaction.message.id
+            );
             var historicalEmbed = new MessageEmbed()
                 .setColor(
                     "#" + Math.floor(Math.random() * 16777215).toString(16)
@@ -71,6 +83,7 @@ const handle = (reaction, MessageEmbed) => {
                 .get(constants.channels.historical)
                 .send({ embeds: [historicalEmbed] });
         }
+        fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
     })();
 };
 
