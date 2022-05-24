@@ -12,6 +12,9 @@ var storage = fs.readFileSync("./storage.json");
 var parsedStorage = JSON.parse(storage);
 
 const handle = (reaction, MessageEmbed) => {
+    //get and parse storage
+    storage = fs.readFileSync("./storage.json");
+    parsedStorage = JSON.parse(storage);
     //handle functions
     (async () => {
         if (reaction.partial) {
@@ -25,7 +28,6 @@ const handle = (reaction, MessageEmbed) => {
         }
         // cache all the emojis reacted to the message
         reaction.message.reactions.cache.get(reaction.emoji.name);
-        var parsedStorage = JSON.parse(storage);
 
         if (
             // if there are more than three reactions and it has not been placed in historical before, we go ahead and place it
@@ -56,7 +58,25 @@ const handle = (reaction, MessageEmbed) => {
                         "[Click here to be teleported](" +
                         reaction.message.url +
                         ")",
-                }); // add the message content to the historical message embed
+                }) // add the message content to the historical message embed
+                .setFooter({
+                    text: "​",
+                    iconURL:
+                        "https://cdn.discordapp.com/emojis/" +
+                        (reaction.emoji.name == "rose"
+                            ? "976697204137947146"
+                            : reaction.emoji.name == "luna"
+                            ? "976696035516755988"
+                            : reaction.emoji.name == "jack"
+                            ? "976698395081211934"
+                            : reaction.emoji.name == "alexis"
+                            ? "976697203655581726"
+                            : reaction.emoji.name == "baby"
+                            ? "976698394707906581"
+                            : "962931353970683936") +
+                        ".webp?size=96&quality=lossless",
+                }); // set the footer based on the emoji used
+
             if (reaction.message.attachments.size > 0) {
                 if (
                     Array.from(
