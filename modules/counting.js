@@ -102,7 +102,9 @@ const handle = (message) => {
             message.react("🇼");
             message.react("🇪");
             message.react("🇷");
-            message.channel.send("The answer to life, the universe, and everything: 42");
+            message.channel.send(
+                "The answer to life, the universe, and everything: 42"
+            );
         }
 
         parsedStorage.modules.counting.next++;
@@ -192,7 +194,13 @@ const handle = (message) => {
     // Calculates score based on constants from #5.
 
     parsedStorage.modules.counting.statistics[userIndex] == userStats;
+
     // adds userStats back to temp Storage
+    parsedStorage.modules.counting.statistics =
+        parsedStorage.modules.counting.statistics.filter(
+            (stat) => !(stat.timesCounted == 0 && stat.errors == 0)
+        );
+
     parsedStorage.modules.counting.statistics.sort((a, b) => {
         return a.score > b.score ? -1 : 1;
     });
