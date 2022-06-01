@@ -49,13 +49,19 @@ const handle = (reaction, MessageEmbed) => {
                     name: reaction.message.author.username,
                     iconURL: reaction.message.author.displayAvatarURL(),
                 }) // show the author of the original message on the embed
+                .setDescription(
+                    reaction.message.content == ""
+                        ? "Look!"
+                        : reaction.message.content
+                )
                 .addFields({
-                    name:
-                        reaction.message.content == ""
-                            ? "Look!"
-                            : reaction.message.content,
+                    name: "​",
                     value:
-                        "[Click here to be teleported](" +
+                        "<@" +
+                        reaction.message.author.id +
+                        "> in <#" +
+                        reaction.message.channel.id +
+                        "> \n[Click here to be teleported](" +
                         reaction.message.url +
                         ")",
                 }) // add the message content to the historical message embed
