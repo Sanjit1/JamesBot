@@ -14,6 +14,7 @@ const counting = require("./modules/counting.js");
 const join = require("./modules/join.js");
 const qotd = require("./modules/qotd.js");
 const admin = require("./modules/admin.js");
+const topicPings = require("./modules/topicPings.js");
 const commands = require("./modules/commands.js");
 const historicalMessages = require("./modules/historicalMessages.js");
 
@@ -47,6 +48,9 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", (message) => {
+    if (message.channel.type === "DM") return;
+
+    topicPings.handle(message, MessageEmbed);
     // Channel Handler
     if (message.channelId == constants.channels.counting) {
         counting.handle(message);
