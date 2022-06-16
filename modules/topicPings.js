@@ -85,7 +85,7 @@ const handle = (message, MessageEmbed) => {
                                 onCoolDown.add(wrapper);
                                 setTimeout(() => {
                                     onCoolDown.delete(wrapper);
-                                }, 1 * 1000 * 3);
+                                }, 60 * 1000 * 3);
                             }
                         }
                     );
