@@ -10,7 +10,8 @@ const handle = (message, MessageEmbed) => {
     Object.keys(parsedStorage.modules.pings.users).forEach((element) => {
         message.guild.members
             .fetch({ element, force: true })
-            .then((toPing) => {
+            .then((collec) => {
+                var toPing = collec.get(element);
                 if (
                     message.author.id != element &&
                     !onCoolDown.has(element) &&
@@ -77,7 +78,7 @@ const handle = (message, MessageEmbed) => {
                                             inline: true,
                                         }
                                     ); // add the message content to the historical message embed
-
+                                console.log(toPing);
                                 toPing
                                     .send({ embeds: [pingEmbed] })
                                     .catch(() => {});

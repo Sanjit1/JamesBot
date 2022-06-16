@@ -111,9 +111,9 @@ const handle = (message, MessageEmbed) => {
                             parsedStorage.modules.counting.statistics[i].user;
                         await message.guild.members
                             .fetch({ dispName, force: true })
-                            .then((member) => {
-                                dispName = member.displayName;
-                                console.log(member);
+                            .then((collec) => {
+                                dispName = collec.get(dispName).displayName;
+                                //console.log(member);
                                 leaderboardMessage +=
                                     i +
                                     1 +
