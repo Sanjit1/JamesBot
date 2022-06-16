@@ -113,7 +113,6 @@ const handle = (message, MessageEmbed) => {
                             .fetch({ dispName, force: true })
                             .then((collec) => {
                                 dispName = collec.get(dispName).displayName;
-                                //console.log(member);
                                 leaderboardMessage +=
                                     i +
                                     1 +

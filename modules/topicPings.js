@@ -78,7 +78,6 @@ const handle = (message, MessageEmbed) => {
                                             inline: true,
                                         }
                                     ); // add the message content to the historical message embed
-                                console.log(toPing);
                                 toPing
                                     .send({ embeds: [pingEmbed] })
                                     .catch(() => {});
