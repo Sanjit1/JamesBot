@@ -9,6 +9,16 @@ const handle = (message, MessageEmbed) => {
     var filter = /[a-zA-Z0-9 -!@#$% ^&*:;,.~+-=]/gm; // Filter out some characters
     Object.keys(parsedStorage.modules.pings.users).forEach((element) => {
         if (
+            message.guild.member(
+                element
+            )
+        ) {
+            var memberToPing = await message.guild.members.fetch(
+                element
+            );
+        
+
+        if (
             message.author.id != element &&
             !onCoolDown.has(element) &&
             message.channel.permissionsFor(element).has("READ_MESSAGE_HISTORY")
@@ -25,9 +35,9 @@ const handle = (message, MessageEmbed) => {
                     var pingEmbed = new MessageEmbed()
                         .setColor(
                             "#" +
-                                Math.floor(Math.random() * 16777215).toString(
-                                    16
-                                )
+                            Math.floor(Math.random() * 16777215).toString(
+                                16
+                            )
                         ) // set a random color cuz why not
                         .setAuthor({
                             name: message.author.username,
@@ -57,10 +67,10 @@ const handle = (message, MessageEmbed) => {
                             }
                         ); // add the message content to the historical message embed
 
-                    message.author
+                    memberToPing
                         .send({ embeds: [pingEmbed] })
-                        .catch(() => {});
-                    wrapper = message.author.id;
+                        .catch(() => { });
+                    wrapper = memberToPing.id;
                     onCoolDown.add(wrapper);
                     setTimeout(() => {
                         onCoolDown.delete(wrapper);
@@ -68,6 +78,9 @@ const handle = (message, MessageEmbed) => {
                 }
             });
         }
+    } else {
+        //delete later when not lazy
+    }
     });
 };
 
