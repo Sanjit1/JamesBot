@@ -8,9 +8,9 @@ const handle = (message, MessageEmbed) => {
     parsedStorage = JSON.parse(storage);
     var filter = /[a-zA-Z0-9 -!@#$% ^&*:;,.~+-=]/gm; // Filter out some characters
     Object.keys(parsedStorage.modules.pings.users).forEach((element) => {
-        if (message.guild.member(element)) {
-            (async () => {
-                var memberToPing = await message.guild.members.fetch(element);
+        message.guild.members
+            .fetch({ element, force: true })
+            .then((toPing) => {
                 if (
                     message.author.id != element &&
                     !onCoolDown.has(element) &&
@@ -78,10 +78,10 @@ const handle = (message, MessageEmbed) => {
                                         }
                                     ); // add the message content to the historical message embed
 
-                                memberToPing
+                                toPing
                                     .send({ embeds: [pingEmbed] })
                                     .catch(() => {});
-                                wrapper = memberToPing.id;
+                                wrapper = toPing.id;
                                 onCoolDown.add(wrapper);
                                 setTimeout(() => {
                                     onCoolDown.delete(wrapper);
@@ -90,10 +90,10 @@ const handle = (message, MessageEmbed) => {
                         }
                     );
                 }
-            })();
-        } else {
-            //delete later when not lazy
-        }
+            })
+            .catch(() => {
+                //remove later
+            });
     });
 };
 

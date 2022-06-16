@@ -11,7 +11,7 @@ const constants = test
     ? require("./../testConstants.json")
     : require("./../constants.json");
 
-const handle = (client, message, MessageEmbed) => {
+const handle = (message, MessageEmbed) => {
     storage = fs.readFileSync("./storage.json");
     parsedStorage = JSON.parse(storage);
     // update storage.
@@ -106,38 +106,26 @@ const handle = (client, message, MessageEmbed) => {
                         : section * 10 + 1);
                     i++
                 ) {
-                    var profileDisplay = "undef";
-                    client.users
-                        .fetch(
-                            parsedStorage.modules.counting.statistics[i].user
-                        )
-                        .then((user) => {
-                            if (
-                                message.guild.member(
-                                    parsedStorage.modules.counting.statistics[i].user
-                                )
-                            ) {
-                                var rankedMember = await message.guild.members.fetch(
-                                    parsedStorage.modules.counting.statistics[i].user
-                                );
-                                profileDisplay = rankedMember.displayName;
-                            } else {
-                                profileDisplay = user.username;   
-                            }
-                        })
-                        .catch((err) => {
-                            profileDisplay = 'sus';
-                        });
-                    
-
-                    leaderboardMessage +=
-                        i +
-                        1 +
-                        ". " +
-                        profileDisplay +
-                        " " +
-                        parsedStorage.modules.counting.statistics[i].score +
-                        "\n";
+                    await (async () => {
+                        var dispName =
+                            parsedStorage.modules.counting.statistics[i].user;
+                        await message.guild.members
+                            .fetch({ dispName, force: true })
+                            .then((member) => {
+                                dispName = member.displayName;
+                                console.log(member);
+                                leaderboardMessage +=
+                                    i +
+                                    1 +
+                                    ". " +
+                                    dispName +
+                                    " " +
+                                    parsedStorage.modules.counting.statistics[i]
+                                        .score +
+                                    "\n";
+                            })
+                            .catch(() => {});
+                    })();
                 }
             }
             message.channel.send(leaderboardMessage);
