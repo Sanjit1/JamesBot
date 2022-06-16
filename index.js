@@ -65,7 +65,7 @@ client.on("messageCreate", (message) => {
     ) {
         admin.handle(message);
     } else if (message.content.startsWith("j!")) {
-        commands.handle(message, MessageEmbed);
+        commands.handle(client, message, MessageEmbed);
     }
 });
 

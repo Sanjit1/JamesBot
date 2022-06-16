@@ -11,7 +11,7 @@ const constants = test
     ? require("./../testConstants.json")
     : require("./../constants.json");
 
-const handle = (message, MessageEmbed) => {
+const handle = (client, message, MessageEmbed) => {
     storage = fs.readFileSync("./storage.json");
     parsedStorage = JSON.parse(storage);
     // update storage.
@@ -106,15 +106,35 @@ const handle = (message, MessageEmbed) => {
                         : section * 10 + 1);
                     i++
                 ) {
-                    var rankedMember = await message.guild.members.fetch(
-                        parsedStorage.modules.counting.statistics[i].user
-                    );
+                    var profileDisplay = "undef";
+                    client.users
+                        .fetch(
+                            parsedStorage.modules.counting.statistics[i].user
+                        )
+                        .then((user) => {
+                            if (
+                                message.guild.member(
+                                    parsedStorage.modules.counting.statistics[i].user
+                                )
+                            ) {
+                                var rankedMember = await message.guild.members.fetch(
+                                    parsedStorage.modules.counting.statistics[i].user
+                                );
+                                profileDisplay = rankedMember.displayName;
+                            } else {
+                                profileDisplay = user.username;   
+                            }
+                        })
+                        .catch((err) => {
+                            profileDisplay = 'sus';
+                        });
+                    
 
                     leaderboardMessage +=
                         i +
                         1 +
                         ". " +
-                        rankedMember.displayName +
+                        profileDisplay +
                         " " +
                         parsedStorage.modules.counting.statistics[i].score +
                         "\n";
