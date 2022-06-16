@@ -82,7 +82,7 @@ const handle = (message, MessageEmbed) => {
                                 toPing
                                     .send({ embeds: [pingEmbed] })
                                     .catch(() => {});
-                                wrapper = toPing.id;
+                                wrapper = element;
                                 onCoolDown.add(wrapper);
                                 setTimeout(() => {
                                     onCoolDown.delete(wrapper);
