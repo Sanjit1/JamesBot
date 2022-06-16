@@ -8,8 +8,9 @@ const handle = (message, MessageEmbed) => {
     parsedStorage = JSON.parse(storage);
     var filter = /[a-zA-Z0-9 -!@#$% ^&*:;,.~+-=]/gm; // Filter out some characters
     Object.keys(parsedStorage.modules.pings.users).forEach((element) => {
-        async () => {
+        
             if (message.guild.member(element)) {
+                (async () => {
                 var memberToPing = await message.guild.members.fetch(element);
                 if (
                     message.author.id != element &&
@@ -90,11 +91,12 @@ const handle = (message, MessageEmbed) => {
                         }
                     );
                 }
+            })();
             } else {
                 //delete later when not lazy
             }
         };
-    });
+    
 };
 
 module.exports = { handle };
