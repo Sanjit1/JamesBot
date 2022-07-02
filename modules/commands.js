@@ -62,10 +62,23 @@ const handle = (message, MessageEmbed) => {
                     name: "j!pings rem <topic>",
                     value: "Removes topics from your ping list. May only be used in bots-spam-the-ham",
                     inline: true,
+                },
+                {
+                    name: "j!dance",
+                    value: "Does a Kirby dance",
+                    inline: false,
                 }
             )
             .setFooter({ text: "My name is James!" });
         message.channel.send({ embeds: [helpMenu] });
+    } else if (
+        message.content.startsWith("j!dance") &&
+        (message.channelId == constants.channels.bots ||
+            message.channelId == constants.channels.canttalk)
+    ) {
+        message.channel.send(
+            "https://c.tenor.com/XbfcpBquW5oAAAAd/kirby-kirby-dance.gif"
+        );
     }
     // Counting
     else if (
