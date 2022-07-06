@@ -50,7 +50,7 @@ client.once("ready", () => {
 client.on("messageCreate", (message) => {
     if (message.channel.type === "DM") return;
 
-    topicPings.handle(message, MessageEmbed);
+    if (!message.author.bot) topicPings.handle(message, MessageEmbed);
     // Channel Handler
     if (message.channelId == constants.channels.counting) {
         counting.handle(message);
