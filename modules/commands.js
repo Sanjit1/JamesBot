@@ -220,7 +220,9 @@ const handle = (message, MessageEmbed) => {
         if (message.content.split("j!pings add ")[1] != undefined) {
             var topic = (
                 message.content.split("j!pings add ")[1].match(filter) || []
-            ).join("");
+            )
+                .join("")
+                .toLowerCase();
 
             if (
                 typeof parsedStorage.modules.pings.users[message.author.id] ==
@@ -281,29 +283,33 @@ const handle = (message, MessageEmbed) => {
         }
         if (message.content.split("j!pings del ")[1] != undefined) {
             removeTopic(
-                (
-                    message.content.split("j!pings del ")[1].match(filter) || []
-                ).join("")
+                (message.content.split("j!pings del ")[1].match(filter) || [])
+                    .join("")
+                    .toLowerCase()
             );
         } else if (message.content.split("j!pings rem ")[1] != undefined) {
             removeTopic(
-                (
-                    message.content.split("j!pings rem ")[1].match(filter) || []
-                ).join("")
+                (message.content.split("j!pings rem ")[1].match(filter) || [])
+                    .join("")
+                    .toLowerCase()
             );
         } else if (message.content.split("j!pings delete ")[1] != undefined) {
             removeTopic(
                 (
                     message.content.split("j!pings delete ")[1].match(filter) ||
                     []
-                ).join("")
+                )
+                    .join("")
+                    .toLowerCase()
             );
         } else if (message.content.split("j!pings remove ")[1] != undefined) {
             removeTopic(
                 (
                     message.content.split("j!pings remove ")[1].match(filter) ||
                     []
-                ).join("")
+                )
+                    .join("")
+                    .toLowerCase()
             );
         } else {
             message.channel.send("Smh. Gimme a topic");

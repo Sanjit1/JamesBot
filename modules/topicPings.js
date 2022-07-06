@@ -7,35 +7,27 @@ const handle = (message, MessageEmbed) => {
     parsedStorage = JSON.parse(storage);
     var filter = /[a-zA-Z0-9 -!@#$% ^&*:;,.~+-=]/gm; // Filter out some characters
     Object.keys(parsedStorage.modules.pings.users).forEach((element) => {
-        message.guild.members
-            .fetch({ element, force: true })
-            .then((collec) => {
-                var toPing = collec.get(element);
-
-                parsedStorage.modules.pings.users[element].forEach((topic) => {
-                    simplified = (message.content.match(filter) || []).join("");
-                    if (
-                        simplified.split(" ").includes(topic) ||
-                        simplified
-                            .replace(".", "")
-                            .split(" ")
-                            .includes(topic) ||
-                        simplified
-                            .replace(",", "")
-                            .split(" ")
-                            .includes(topic) ||
-                        simplified
-                            .replace('"', "")
-                            .split(" ")
-                            .includes(topic) ||
-                        simplified.replace("'", "").split(" ").includes(topic)
-                    ) {
-                        if (
-                            message.author.id != element &&
-                            message.channel
-                                .permissionsFor(element)
-                                .has("READ_MESSAGE_HISTORY")
-                        ) {
+        parsedStorage.modules.pings.users[element].forEach((topic) => {
+            simplified = (message.content.match(filter) || [])
+                .join("")
+                .toLowerCase();
+            if (
+                simplified.split(" ").includes(topic) ||
+                simplified.replace(".", "").split(" ").includes(topic) ||
+                simplified.replace(",", "").split(" ").includes(topic) ||
+                simplified.replace('"', "").split(" ").includes(topic) ||
+                simplified.replace("'", "").split(" ").includes(topic)
+            ) {
+                if (
+                    message.author.id != element &&
+                    message.channel
+                        .permissionsFor(element)
+                        .has("READ_MESSAGE_HISTORY")
+                ) {
+                    message.guild.members
+                        .fetch({ element, force: true })
+                        .then((collec) => {
+                            var toPing = collec.get(element);
                             var pingEmbed = new MessageEmbed()
                                 .setColor(
                                     "#" +
@@ -73,13 +65,13 @@ const handle = (message, MessageEmbed) => {
                             toPing
                                 .send({ embeds: [pingEmbed] })
                                 .catch(() => {});
-                        }
-                    }
-                });
-            })
-            .catch(() => {
-                //remove later
-            });
+                        })
+                        .catch(() => {
+                            //remove later
+                        });
+                }
+            }
+        });
     });
 };
 
