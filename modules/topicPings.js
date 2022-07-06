@@ -4,6 +4,7 @@ var storage = fs.readFileSync("./storage.json");
 var parsedStorage = JSON.parse(storage);
 
 const handle = (message, MessageEmbed) => {
+    update();
     parsedStorage = JSON.parse(storage);
     var filter = /[a-zA-Z0-9 -!@#$% ^&*:;,.~+-=]/gm; // Filter out some characters
     Object.keys(parsedStorage.modules.pings.users).forEach((element) => {
@@ -18,16 +19,16 @@ const handle = (message, MessageEmbed) => {
                 simplified.replace('"', "").split(" ").includes(topic) ||
                 simplified.replace("'", "").split(" ").includes(topic)
             ) {
-                if (
-                    message.author.id != element &&
-                    message.channel
-                        .permissionsFor(element)
-                        .has("READ_MESSAGE_HISTORY")
-                ) {
-                    message.guild.members
-                        .fetch({ element, force: true })
-                        .then((collec) => {
-                            var toPing = collec.get(element);
+                message.guild.members
+                    .fetch({ element, force: true })
+                    .then((collec) => {
+                        var toPing = collec.get(element);
+                        if (
+                            message.author.id != element &&
+                            message.channel
+                                .permissionsFor(element)
+                                .has("READ_MESSAGE_HISTORY")
+                        ) {
                             var pingEmbed = new MessageEmbed()
                                 .setColor(
                                     "#" +
@@ -65,14 +66,24 @@ const handle = (message, MessageEmbed) => {
                             toPing
                                 .send({ embeds: [pingEmbed] })
                                 .catch(() => {});
-                        })
-                        .catch(() => {
-                            //remove later
-                        });
-                }
+                        }
+                    })
+                    .catch(() => {
+                        //remove later
+                        update();
+                        delete parsedStorage.modules.pings.users[element];
+                        fs.writeFileSync(
+                            "./storage.json",
+                            JSON.stringify(parsedStorage)
+                        );
+                    });
             }
         });
     });
 };
 
+const update = () => {
+    storage = fs.readFileSync("./storage.json");
+    parsedStorage = JSON.parse(storage);
+};
 module.exports = { handle };
