@@ -8,10 +8,12 @@ const constants = test
     : require("./../constants.json");
 
 const fs = require("fs");
+const { Client, Intents, MessageEmbed } = require("discord.js");
+
 var storage = fs.readFileSync("./storage.json");
 var parsedStorage = JSON.parse(storage);
 
-const handle = (reaction, MessageEmbed) => {
+const handle = (reaction) => {
     //get and parse storage
     storage = fs.readFileSync("./storage.json");
     parsedStorage = JSON.parse(storage);

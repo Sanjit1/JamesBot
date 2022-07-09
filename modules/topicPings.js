@@ -2,8 +2,9 @@
 const fs = require("fs");
 var storage = fs.readFileSync("./storage.json");
 var parsedStorage = JSON.parse(storage);
+const { Client, Intents, MessageEmbed } = require("discord.js");
 
-const handle = (message, MessageEmbed) => {
+const handle = (message) => {
     update();
     parsedStorage = JSON.parse(storage);
     var filter = /[a-zA-Z0-9 -!@#$% ^&*:;,.~+-=]/gm; // Filter out some characters
@@ -86,4 +87,143 @@ const update = () => {
     storage = fs.readFileSync("./storage.json");
     parsedStorage = JSON.parse(storage);
 };
-module.exports = { handle };
+
+const commands = (message) => {
+    if (message.content.startsWith("j!pings add")) {
+        var filter = /[a-zA-Z0-9 -!@#$%^&*:;,.~+-=]/gm; // Filter out some characters
+        if (message.content.split("j!pings add ")[1] != undefined) {
+            var topic = (
+                message.content.split("j!pings add ")[1].match(filter) || []
+            )
+                .join("")
+                .toLowerCase();
+
+            if (
+                typeof parsedStorage.modules.pings.users[message.author.id] ==
+                "undefined"
+            ) {
+                parsedStorage.modules.pings.users[message.author.id] = [];
+            }
+            if (
+                !parsedStorage.modules.pings.users[message.author.id].includes(
+                    topic
+                )
+            ) {
+                parsedStorage.modules.pings.users[message.author.id].push(
+                    topic
+                );
+                message.channel.send("Added `" + topic + "` to your ping list");
+            } else {
+                message.channel.send("Topic already in ping list!");
+            }
+        } else {
+            message.channel.send("Smh. Gimme a topic");
+        }
+    } else if (message.content.startsWith("j!pings show")) {
+        if (
+            parsedStorage.modules.pings.users.hasOwnProperty(message.author.id)
+        ) {
+            message.channel.send(
+                "You are currently subscribed to `" +
+                    parsedStorage.modules.pings.users[message.author.id].join(
+                        "` `"
+                    ) +
+                    "`"
+            );
+        } else {
+            message.channel.send(
+                "You are not subscribed to anything(yet!). Use `j!pings` to see how to subscribe to topic pings."
+            );
+        }
+    } else if (
+        message.content.startsWith("j!pings del") ||
+        message.content.startsWith("j!pings rem") ||
+        message.content.startsWith("j!pings delete") ||
+        message.content.startsWith("j!pings remove")
+    ) {
+        var filter = /[a-zA-Z0-9 -!@#$%^&*:;,.~+-=]/gm; // Filter out some characters
+        function removeTopic(topic) {
+            if (
+                !parsedStorage.modules.pings.users[message.author.id].includes(
+                    topic
+                )
+            ) {
+                message.channel.send(
+                    "Could not find `" + topic + "` in your pings"
+                );
+            } else {
+                parsedStorage.modules.pings.users[message.author.id] =
+                    parsedStorage.modules.pings.users[message.author.id].filter(
+                        (t) => t != topic
+                    );
+                message.channel.send("Removed `" + topic + "` from your pings");
+            }
+        }
+        if (message.content.split("j!pings del ")[1] != undefined) {
+            removeTopic(
+                (message.content.split("j!pings del ")[1].match(filter) || [])
+                    .join("")
+                    .toLowerCase()
+            );
+        } else if (message.content.split("j!pings rem ")[1] != undefined) {
+            removeTopic(
+                (message.content.split("j!pings rem ")[1].match(filter) || [])
+                    .join("")
+                    .toLowerCase()
+            );
+        } else if (message.content.split("j!pings delete ")[1] != undefined) {
+            removeTopic(
+                (
+                    message.content.split("j!pings delete ")[1].match(filter) ||
+                    []
+                )
+                    .join("")
+                    .toLowerCase()
+            );
+        } else if (message.content.split("j!pings remove ")[1] != undefined) {
+            removeTopic(
+                (
+                    message.content.split("j!pings remove ")[1].match(filter) ||
+                    []
+                )
+                    .join("")
+                    .toLowerCase()
+            );
+        } else {
+            message.channel.send("Smh. Gimme a topic");
+        }
+    } else {
+        var helpMenu = new MessageEmbed()
+            .setColor("#decaf5")
+            .setTitle("Topic Pings")
+            .setAuthor({
+                name: message.author.username,
+                iconURL: message.author.displayAvatarURL(),
+            })
+            .addFields(
+                {
+                    name: "j!pings help",
+                    value: "Brings up this help menu.",
+                    inline: true,
+                },
+                {
+                    name: "j!pings add <topic>",
+                    value: "Adds <topic> to your ping lists, and no the <>'s are not needed.",
+                    inline: true,
+                },
+                {
+                    name: "j!pings rem <topic>",
+                    value: "Deletes <topic> from your ping lists, and no the <>'s are not needed",
+                    inline: true,
+                },
+                {
+                    name: "j!pings show",
+                    value: "Shows all the topics you are subscribed to.",
+                    inline: true,
+                }
+            );
+        message.channel.send({ embeds: [helpMenu] });
+    }
+};
+
+module.exports = { handle, commands };

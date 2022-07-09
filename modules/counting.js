@@ -129,11 +129,11 @@ const handle = (message) => {
                 " Is alright, they were only " +
                 elapsedtime +
                 " milliseconds behind the last person. It was close, but this bot will allow the count to continue " +
-                "The next number is: " +
+                "The next number is: **" +
                 parsedStorage.modules.counting.next +
-                ". Make sure " +
+                "**. Make sure **" +
                 last +
-                " doesn't count the next count."
+                "** doesn't count the next count. Also ignore the next message lol."
         );
         message.delete();
         // checks if the message is a number
@@ -175,9 +175,9 @@ const handle = (message) => {
                 ">" +
                 " sucks. You have messed up " +
                 userStats.errors +
-                " times. The next number is: " +
+                " times. The next number is: **" +
                 parsedStorage.modules.counting.next +
-                ". Make sure " +
+                "**. Make sure " +
                 last +
                 " doesn't count the next count."
         );
@@ -219,11 +219,12 @@ const handleDel = (message) => {
             "<@" +
                 message.author.id +
                 ">" +
-                " sucks, they edited their count of " +
+                " sucks, they deleted their count of " +
                 num +
                 ". " +
-                "The next number is: " +
-                parsedStorage.modules.counting.next
+                "The next number is: **" +
+                parsedStorage.modules.counting.next +
+                "**."
         );
     }
 };
@@ -242,8 +243,9 @@ const handleEdit = (oldMessage, newMessage) => {
                 " sucks, they edited their count of " +
                 num +
                 ". " +
-                "The next number is: " +
-                parsedStorage.modules.counting.next
+                "The next number is: **" +
+                parsedStorage.modules.counting.next +
+                "**."
         );
     }
 };

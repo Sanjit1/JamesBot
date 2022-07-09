@@ -9,7 +9,7 @@ const handle = (message) => {
         var number = message.content.split(" ")[1];
         parsedStorage.modules.counting.next = parseInt(number);
         fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
-        message.channel.send("Next numb is " + number);
+        message.channel.send("Next numb is **" + number + "**.");
     }
 };
 

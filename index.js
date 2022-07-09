@@ -10,13 +10,13 @@ const constants = test
     : require("./constants.json");
 
 // modules
+const admin = require("./modules/admin.js");
+const commands = require("./modules/commands.js");
 const counting = require("./modules/counting.js");
+const historicalMessages = require("./modules/historicalMessages.js");
 const join = require("./modules/join.js");
 const qotd = require("./modules/qotd.js");
-const admin = require("./modules/admin.js");
 const topicPings = require("./modules/topicPings.js");
-const commands = require("./modules/commands.js");
-const historicalMessages = require("./modules/historicalMessages.js");
 
 // Basic Init Stuff
 const intents = [
@@ -38,6 +38,8 @@ const intents = [
     Intents.FLAGS.GUILD_SCHEDULED_EVENTS,
 ];
 
+var date;
+
 const client = new Client({
     intents: intents,
     partials: ["MESSAGE", "CHANNEL", "REACTION"],
@@ -45,12 +47,33 @@ const client = new Client({
 client.login(test ? process.env.TEST : process.env.TOKEN);
 client.once("ready", () => {
     console.log("Bots on");
+    date = new Date();
+    if (date.getHours() > 7) {
+        date.setDate(date.getDate() + 1);
+    }
+    date.setHours(8);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date2 = new Date();
+
+    function at8AM() {
+        birthdays.check();
+        eventscheck();
+    }
+
+    setTimeout(() => {
+        // It is now 8 AM. Good Morning let us set an interval to do stuff every 8 am.
+        setInterval(() => {
+            // Hello, it is once again 8 AM.
+        }, 86400000);
+    }, date - date2);
 });
 
 client.on("messageCreate", (message) => {
     if (message.channel.type === "DM") return;
 
-    if (!message.author.bot) topicPings.handle(message, MessageEmbed);
+    if (!message.author.bot) topicPings.handle(message);
+
     // Channel Handler
     if (message.channelId == constants.channels.counting) {
         counting.handle(message);
@@ -59,13 +82,24 @@ client.on("messageCreate", (message) => {
     } else if (message.channelId == constants.channels) {
     }
 
-    if (
-        message.content.startsWith("j@") &&
-        message.author.id == constants.users.sanjit
+    if (message.content.startsWith("j@")) {
+        if (message.member.permissions.has("ADMINISTRATOR")) {
+            admin.handle(message);
+        } else {
+            message.channel.send("Oh silly you are not an admin.");
+        }
+    } else if (
+        message.content.startsWith("j!pings") &&
+        message.channelId == constants.channels.bots
     ) {
-        admin.handle(message);
+        topicPings.commands(message);
+    } else if (
+        message.content.startsWith("j!pings") &&
+        message.channelId == constants.channels.bots
+    ) {
+        birthdays.commands(message);
     } else if (message.content.startsWith("j!")) {
-        commands.handle(message, MessageEmbed);
+        commands.handle(message);
     }
 });
 
@@ -91,6 +125,6 @@ client.on("messageReactionAdd", (reaction, user) => {
     if (
         ["luna", "jack", "baby", "rose", "alexis"].includes(reaction.emoji.name)
     ) {
-        historicalMessages.handle(reaction, MessageEmbed);
+        historicalMessages.handle(reaction);
     }
 });

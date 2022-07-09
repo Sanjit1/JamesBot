@@ -2,6 +2,7 @@
 require("dotenv/config");
 
 const fs = require("fs");
+const { Client, Intents, MessageEmbed } = require("discord.js");
 var storage = fs.readFileSync("./storage.json");
 var parsedStorage = JSON.parse(storage);
 
@@ -11,7 +12,7 @@ const constants = test
     ? require("./../testConstants.json")
     : require("./../constants.json");
 
-const handle = (message, MessageEmbed) => {
+const handle = (message) => {
     storage = fs.readFileSync("./storage.json");
     parsedStorage = JSON.parse(storage);
     // update storage.
@@ -210,110 +211,6 @@ const handle = (message, MessageEmbed) => {
                 parsedStorage.modules.counting.statistics[userIndex].score +
                 "**"
         );
-    }
-    // Pings
-    else if (
-        message.content.startsWith("j!pings add") &&
-        message.channelId == constants.channels.bots
-    ) {
-        var filter = /[a-zA-Z0-9 -!@#$%^&*:;,.~+-=]/gm; // Filter out some characters
-        if (message.content.split("j!pings add ")[1] != undefined) {
-            var topic = (
-                message.content.split("j!pings add ")[1].match(filter) || []
-            )
-                .join("")
-                .toLowerCase();
-
-            if (
-                typeof parsedStorage.modules.pings.users[message.author.id] ==
-                "undefined"
-            ) {
-                parsedStorage.modules.pings.users[message.author.id] = [];
-            }
-            if (
-                !parsedStorage.modules.pings.users[message.author.id].includes(
-                    topic
-                )
-            ) {
-                parsedStorage.modules.pings.users[message.author.id].push(
-                    topic
-                );
-                message.channel.send("Added `" + topic + "` to your ping list");
-            } else {
-                message.channel.send("Topic already in ping list!");
-            }
-        } else {
-            message.channel.send("Smh. Gimme a topic");
-        }
-    } else if (
-        message.content.startsWith("j!pings show") &&
-        message.channelId == constants.channels.bots
-    ) {
-        message.channel.send(
-            "You are currently subscribed to `" +
-                parsedStorage.modules.pings.users[message.author.id].join(
-                    "` `"
-                ) +
-                "`"
-        );
-    } else if (
-        (message.content.startsWith("j!pings del") ||
-            message.content.startsWith("j!pings rem") ||
-            message.content.startsWith("j!pings delete") ||
-            message.content.startsWith("j!pings remove")) &&
-        message.channelId == constants.channels.bots
-    ) {
-        var filter = /[a-zA-Z0-9 -!@#$%^&*:;,.~+-=]/gm; // Filter out some characters
-        function removeTopic(topic) {
-            if (
-                !parsedStorage.modules.pings.users[message.author.id].includes(
-                    topic
-                )
-            ) {
-                message.channel.send(
-                    "Could not find `" + topic + "` in your pings"
-                );
-            } else {
-                parsedStorage.modules.pings.users[message.author.id] =
-                    parsedStorage.modules.pings.users[message.author.id].filter(
-                        (t) => t != topic
-                    );
-                message.channel.send("Removed `" + topic + "` from your pings");
-            }
-        }
-        if (message.content.split("j!pings del ")[1] != undefined) {
-            removeTopic(
-                (message.content.split("j!pings del ")[1].match(filter) || [])
-                    .join("")
-                    .toLowerCase()
-            );
-        } else if (message.content.split("j!pings rem ")[1] != undefined) {
-            removeTopic(
-                (message.content.split("j!pings rem ")[1].match(filter) || [])
-                    .join("")
-                    .toLowerCase()
-            );
-        } else if (message.content.split("j!pings delete ")[1] != undefined) {
-            removeTopic(
-                (
-                    message.content.split("j!pings delete ")[1].match(filter) ||
-                    []
-                )
-                    .join("")
-                    .toLowerCase()
-            );
-        } else if (message.content.split("j!pings remove ")[1] != undefined) {
-            removeTopic(
-                (
-                    message.content.split("j!pings remove ")[1].match(filter) ||
-                    []
-                )
-                    .join("")
-                    .toLowerCase()
-            );
-        } else {
-            message.channel.send("Smh. Gimme a topic");
-        }
     }
 
     fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
