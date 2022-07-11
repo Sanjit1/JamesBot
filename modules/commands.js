@@ -213,7 +213,7 @@ const handle = (message) => {
         );
     }
 
-    fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
+    fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage, null, '\t'));
 };
 
 module.exports = { handle };

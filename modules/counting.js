@@ -206,7 +206,7 @@ const handle = (message) => {
     });
     // sorts the temp storage to determine ranking
 
-    fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage));
+    fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage, null, '\t'));
 };
 
 // handles when people delete their messages

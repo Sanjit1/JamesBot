@@ -75,7 +75,7 @@ const handle = (message) => {
                         delete parsedStorage.modules.pings.users[element];
                         fs.writeFileSync(
                             "./storage.json",
-                            JSON.stringify(parsedStorage)
+                            JSON.stringify(parsedStorage, null, "\t")
                         );
                     });
             }
@@ -89,6 +89,7 @@ const update = () => {
 };
 
 const commands = (message) => {
+    update();
     if (message.content.startsWith("j!pings add")) {
         var filter = /[a-zA-Z0-9 -!@#$%^&*:;,.~+-=]/gm; // Filter out some characters
         if (message.content.split("j!pings add ")[1] != undefined) {
@@ -121,7 +122,11 @@ const commands = (message) => {
         }
     } else if (message.content.startsWith("j!pings show")) {
         if (
+            parsedStorage.modules.pings.users.hasOwnProperty(
+                message.author.id
+            ) &&
             parsedStorage.modules.pings.users.hasOwnProperty(message.author.id)
+                .length > 0
         ) {
             message.channel.send(
                 "You are currently subscribed to `" +
@@ -224,6 +229,10 @@ const commands = (message) => {
             );
         message.channel.send({ embeds: [helpMenu] });
     }
+    fs.writeFileSync(
+        "./storage.json",
+        JSON.stringify(parsedStorage, null, "\t")
+    );
 };
 
 module.exports = { handle, commands };

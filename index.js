@@ -82,7 +82,7 @@ client.on("messageCreate", (message) => {
     } else if (message.channelId == constants.channels) {
     }
 
-    if (message.content.startsWith("j@")) {
+    if (message.content.startsWith("j.")) {
         if (message.member.permissions.has("ADMINISTRATOR")) {
             admin.handle(message);
         } else {

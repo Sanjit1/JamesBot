@@ -41,7 +41,10 @@ const handle = (reaction) => {
             parsedStorage.modules.historicalMessages.messages.push(
                 reaction.message.id
             ); // add this to the historical history
-            fs.writeFileSync("./storage.json", JSON.stringify(parsedStorage)); // rewrite storage to include history
+            fs.writeFileSync(
+                "./storage.json",
+                JSON.stringify(parsedStorage, null, "\t")
+            ); // rewrite storage to include history
 
             var historicalEmbed = new MessageEmbed()
                 .setColor(
