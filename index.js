@@ -128,3 +128,7 @@ client.on("messageReactionAdd", (reaction, user) => {
         historicalMessages.handle(reaction);
     }
 });
+
+client.on("interactionCreate", (interaction) => {
+    admin.interactionCreate(interaction);
+});
