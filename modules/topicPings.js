@@ -125,8 +125,7 @@ const commands = (message) => {
             parsedStorage.modules.pings.users.hasOwnProperty(
                 message.author.id
             ) &&
-            parsedStorage.modules.pings.users.hasOwnProperty(message.author.id)
-                .length > 0
+            parsedStorage.modules.pings.users[message.author.id].length > 0
         ) {
             message.channel.send(
                 "You are currently subscribed to `" +
