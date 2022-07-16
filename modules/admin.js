@@ -228,7 +228,9 @@ const interactionCreate = (interaction) => {
             o = o[p];
         });
         o[last] = eval(
-            interaction.fields.getTextInputValue(interaction.customId)
+            "(" +
+                interaction.fields.getTextInputValue(interaction.customId) +
+                ")"
         );
         interaction.reply({ content: "Ight lit" });
     }
