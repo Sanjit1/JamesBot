@@ -5,6 +5,9 @@ var parsedStorage = JSON.parse(storage);
 const { Client, Intents, MessageEmbed } = require("discord.js");
 
 const handle = (message) => {
+    if (message.author.id == "962164711611306065") {
+        return;
+    }
     update();
     parsedStorage = JSON.parse(storage);
     var filter = /[a-zA-Z0-9 -!@#$% ^&*:;,.~+-=]/gm; // Filter out some characters
@@ -72,7 +75,10 @@ const handle = (message) => {
                     .catch(() => {
                         //remove later
                         update();
-                        delete parsedStorage.modules.pings.users[element];
+                        // delete parsedStorage.modules.pings.users[element];
+                        message.channel.send(
+                            "<@" + element + "> Ping sanjit pls."
+                        );
                         fs.writeFileSync(
                             "./storage.json",
                             JSON.stringify(parsedStorage, null, "\t")
