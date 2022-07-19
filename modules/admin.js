@@ -176,7 +176,6 @@ const handle = (message) => {
                                 .setLabel("Click here to change")
                                 .setStyle("PRIMARY")
                         );
-
                         message.reply({ components: [row] });
                     }
                 }

@@ -13,6 +13,7 @@ const constants = test
 const admin = require("./modules/admin.js");
 const commands = require("./modules/commands.js");
 const counting = require("./modules/counting.js");
+const events = require("./modules/events.js");
 const historicalMessages = require("./modules/historicalMessages.js");
 const join = require("./modules/join.js");
 const qotd = require("./modules/qotd.js");
@@ -48,7 +49,7 @@ client.login(test ? process.env.TEST : process.env.TOKEN);
 client.once("ready", () => {
     console.log("Bots on");
     date = new Date();
-    if (date.getHours() > 7) {
+    if (date.getHours() > 8) {
         date.setDate(date.getDate() + 1);
     }
     date.setHours(8);
@@ -57,14 +58,17 @@ client.once("ready", () => {
     date2 = new Date();
 
     function at8AM() {
-        birthdays.check();
-        eventscheck();
+        // birthdays.check(client);
+        console.log("IT IS NOW 8 AM.");
+        events.at8AM(client);
     }
 
     setTimeout(() => {
         // It is now 8 AM. Good Morning let us set an interval to do stuff every 8 am.
+        at8AM();
         setInterval(() => {
             // Hello, it is once again 8 AM.
+            at8AM();
         }, 86400000);
     }, date - date2);
 });
@@ -73,6 +77,10 @@ client.on("messageCreate", (message) => {
     if (message.channel.type === "DM") return;
 
     if (!message.author.bot) topicPings.handle(message);
+
+    if (message.content.startsWith("8AM")) {
+        events.at8AM(client);
+    }
 
     // Channel Handler
     if (message.channelId == constants.channels.counting) {
@@ -93,6 +101,11 @@ client.on("messageCreate", (message) => {
         message.channelId == constants.channels.bots
     ) {
         topicPings.commands(message);
+    } else if (
+        message.content.startsWith("j!events") &&
+        message.channelId == constants.channels.meetups
+    ) {
+        events.commands(message);
     } else if (
         message.content.startsWith("j!pings") &&
         message.channelId == constants.channels.bots
@@ -131,4 +144,5 @@ client.on("messageReactionAdd", (reaction, user) => {
 
 client.on("interactionCreate", (interaction) => {
     admin.interactionCreate(interaction);
+    events.interactionCreate(interaction);
 });

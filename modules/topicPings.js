@@ -71,6 +71,7 @@ const handle = (message) => {
                     })
                     .catch(() => {
                         //remove later
+                        message.channel.send("Did <@" + element + "> leave?");
                         update();
                         delete parsedStorage.modules.pings.users[element];
                         fs.writeFileSync(
@@ -81,6 +82,10 @@ const handle = (message) => {
             }
         });
     });
+    fs.writeFileSync(
+        "./storage.json",
+        JSON.stringify(parsedStorage, null, "\t")
+    );
 };
 
 const update = () => {
@@ -121,6 +126,7 @@ const commands = (message) => {
             message.channel.send("Smh. Gimme a topic");
         }
     } else if (message.content.startsWith("j!pings show")) {
+        update();
         if (
             parsedStorage.modules.pings.users.hasOwnProperty(
                 message.author.id
@@ -157,6 +163,7 @@ const commands = (message) => {
                     "Could not find `" + topic + "` in your pings"
                 );
             } else {
+                update();
                 parsedStorage.modules.pings.users[message.author.id] =
                     parsedStorage.modules.pings.users[message.author.id].filter(
                         (t) => t != topic
