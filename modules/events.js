@@ -532,6 +532,17 @@ const interactionCreate = (interaction) => {
         interaction.customId.startsWith("eventsedit")
     ) {
         if (
+            !Object.keys(parsedStorage.modules.events.list).includes(
+                interaction.customId.split(" ")[1]
+            )
+        ) {
+            interaction.reply({
+                content: "Event does not exist anymore.",
+                ephemeral: true,
+            });
+            return;
+        }
+        if (
             parsedStorage.modules.events.list[
                 interaction.customId.split(" ")[1]
             ].organizer != interaction.member.id
@@ -650,6 +661,21 @@ const interactionCreate = (interaction) => {
     ) {
         storage = fs.readFileSync("./storage.json");
         parsedStorage = JSON.parse(storage);
+
+        if (
+            !Object.keys(parsedStorage.modules.events.list).includes(
+                interaction.customId.split(" ")[1]
+            ) &&
+            interaction.customId.split(" ")[1] != "index"
+        ) {
+            console.log(interaction.customId.split(" "));
+            interaction.reply({
+                content:
+                    "Uh oh this event does not exist anymore. Use `j!events show` to show existing events.",
+                ephemeral: true,
+            });
+            return;
+        }
 
         // if rsvp/unrsvp stuff
         if (interaction.customId.endsWith("unrsvp")) {
@@ -842,6 +868,17 @@ const interactionCreate = (interaction) => {
         interaction.isButton() &&
         interaction.customId.startsWith("eventscancel")
     ) {
+        if (
+            !Object.keys(parsedStorage.modules.events.list).includes(
+                interaction.customId.split(" ")[1]
+            )
+        ) {
+            interaction.reply({
+                content: "Event does not exist anymore.",
+                ephemeral: true,
+            });
+            return;
+        }
         if (interaction.customId.endsWith("skipcancel")) {
             interaction.reply({ content: "Event not canceled." });
         } else if (interaction.customId.endsWith("cancel")) {
