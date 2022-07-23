@@ -31,7 +31,10 @@ const handle = (message) => {
                             message.author.id != element &&
                             message.channel
                                 .permissionsFor(element)
-                                .has("READ_MESSAGE_HISTORY")
+                                .has("READ_MESSAGE_HISTORY") &&
+                            message.channel
+                                .permissionsFor(element)
+                                .has("VIEW_CHANNEL")
                         ) {
                             var pingEmbed = new MessageEmbed()
                                 .setColor(
