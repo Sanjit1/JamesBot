@@ -59,7 +59,7 @@ client.once("ready", () => {
 
     function at8AM() {
         // birthdays.check(client);
-        console.log("IT IS NOW 8 AM.");
+        // console.log("IT IS NOW 8 AM.");
         events.at8AM(client);
     }
 
@@ -87,7 +87,7 @@ client.on("messageCreate", (message) => {
         topicPings.handle(message);
 
     if (message.content.startsWith("8AM")) {
-        events.at8AM(client);
+        //events.at8AM(client);
     }
 
     // Channel Handler
