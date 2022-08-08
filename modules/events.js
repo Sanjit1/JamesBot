@@ -930,10 +930,11 @@ const interactionCreate = (interaction) => {
             "./storage.json",
             JSON.stringify(parsedStorage, null, "\t")
         );
-    } catch {
+    } catch (e) {
         interaction.message.channel.send(
             "Something went wrong talk to Snajit."
         );
+        console.log(e);
     }
 };
 
