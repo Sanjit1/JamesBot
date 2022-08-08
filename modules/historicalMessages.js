@@ -33,7 +33,7 @@ const handle = (reaction) => {
 
         if (
             // if there are more than three reactions and it has not been placed in historical before, we go ahead and place it
-            reaction.count > 3 &&
+            reaction.count > 4 &&
             !parsedStorage.modules.historicalMessages.messages.includes(
                 reaction.message.id
             )
