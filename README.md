@@ -6,9 +6,14 @@
 James Bot is the bot that (will) make UCLA Co26 a fun place.
 
 Things it does:
+ - Handles some administrative commands.
+ - Wishes people on their birthdays.
  - Manages Counting (Contributed by [LegendDairy](https://github.com/leonlenk))
- - Waving at people
- - Managing QOTD
+ - Organizes group events.
+ - Manages our starboard. 
+ - Waves at people
+ - Manages the question of the day.
+ - Handles user subscriptions to certain topics.
  - More to come!
 
 ### Issues and Contributing
