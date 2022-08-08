@@ -5,6 +5,9 @@ var parsedStorage = JSON.parse(storage);
 const { Client, Intents, MessageEmbed } = require("discord.js");
 
 const handle = (message) => {
+    if (message.author.id == "962164711611306065") {
+        return;
+    }
     update();
     parsedStorage = JSON.parse(storage);
     var filter = /[a-zA-Z0-9 -!@#$% ^&*:;,.~+-=]/gm; // Filter out some characters
@@ -28,7 +31,10 @@ const handle = (message) => {
                             message.author.id != element &&
                             message.channel
                                 .permissionsFor(element)
-                                .has("READ_MESSAGE_HISTORY")
+                                .has("READ_MESSAGE_HISTORY") &&
+                            message.channel
+                                .permissionsFor(element)
+                                .has("VIEW_CHANNEL")
                         ) {
                             var pingEmbed = new MessageEmbed()
                                 .setColor(
@@ -73,7 +79,10 @@ const handle = (message) => {
                         //remove later
                         message.channel.send("Did <@" + element + "> leave?");
                         update();
-                        delete parsedStorage.modules.pings.users[element];
+                        // delete parsedStorage.modules.pings.users[element];
+                        message.channel.send(
+                            "<@" + element + "> Ping sanjit pls."
+                        );
                         fs.writeFileSync(
                             "./storage.json",
                             JSON.stringify(parsedStorage, null, "\t")
@@ -131,8 +140,7 @@ const commands = (message) => {
             parsedStorage.modules.pings.users.hasOwnProperty(
                 message.author.id
             ) &&
-            parsedStorage.modules.pings.users.hasOwnProperty(message.author.id)
-                .length > 0
+            parsedStorage.modules.pings.users[message.author.id].length > 0
         ) {
             message.channel.send(
                 "You are currently subscribed to `" +

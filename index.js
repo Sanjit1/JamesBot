@@ -76,7 +76,15 @@ client.once("ready", () => {
 client.on("messageCreate", (message) => {
     if (message.channel.type === "DM") return;
 
-    if (!message.author.bot) topicPings.handle(message);
+    if (
+        !message.author.bot &&
+        ![
+            constants.channels.mod,
+            constants.channels.james,
+            constants.channels.logs,
+        ].includes(message.channel.id)
+    )
+        topicPings.handle(message);
 
     if (message.content.startsWith("8AM")) {
         events.at8AM(client);
